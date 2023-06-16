@@ -1,0 +1,119 @@
+// Commands
+// prisma generate
+// npx prisma db push
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  expires      DateTime @db.Timestamp
+  sessionToken String   @db.String
+  userId       String
+}
+
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  username String  @unique
+  name     String? @db.String
+  password String  @db.String
+  // email    String? @unique
+
+  status   Status  @default(ACTIVE)
+  verified Boolean @default(false)
+  role     Role    @default(USER)
+
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @updatedAt
+
+  records  Record[]
+  accounts Account[]
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Record {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  url            String      @unique
+  name           String
+  description    String?
+  profilePicture String
+  preferences    Prefences
+  user           User        @relation(fields: [userId], references: [id])
+  userId         String      @db.ObjectId
+  createdAt      DateTime    @default(now()) @db.Date
+  updatedAt      DateTime    @updatedAt
+  Link           Link[]
+  Statistic      Statistic[]
+}
+
+model Link {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  record      Record       @relation(fields: [recordId], references: [id])
+  recordId    String       @db.ObjectId
+  order       Int?
+  url         String
+  name        String
+  customImage CustomImage?
+  animated    Boolean?     @default(false)
+  createdAt   DateTime     @default(now()) @db.Date
+  updatedAt   DateTime     @updatedAt
+  Statistic   Statistic[]
+}
+
+model Statistic {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip        String?
+  country   String?
+  from      String
+  time      Int
+  to        Link     @relation(fields: [toId], references: [id])
+  toId      String   @db.ObjectId
+  createdAt DateTime @default(now()) @db.Date
+  link      Record   @relation(fields: [linkId], references: [id])
+  linkId    String   @db.ObjectId
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  ACTIVE
+  FROZEN
+  BANNED
+}
+
+type Prefences {
+  backgroundGradient Boolean @default(false)
+  backgroundColor    String  @default("#fff")
+}
+
+type CustomImage {
+  enabled Boolean
+  image   String?
+}

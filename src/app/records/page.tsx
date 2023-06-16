@@ -3,9 +3,9 @@ import Link from "next/link";
 export default function Home(): JSX.Element {
   return (
     <>
-      <h1>Here will be landing soon...</h1>
+      <h1>Something goes wrong!</h1>
       <Button variant="link" asChild>
-        <Link href={"/dashboard"}>Dashboard</Link>
+        <Link href={"/dashboard"}> go to dashboard</Link>
       </Button>
     </>
   );

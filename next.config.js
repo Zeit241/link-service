@@ -2,7 +2,9 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    serverActions: true,
+    serverComponentsExternalPackages: ["@prisma/client"],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
