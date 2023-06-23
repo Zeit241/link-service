@@ -1,13 +1,14 @@
-import { CustomTypes } from '@/types/custom-types';
+import { CustomTypes } from "@/types/custom-types";
+import { User } from "@prisma/client";
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
-    user: CustomTypes;
+    user: User;
   }
 }
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
-    user: CustomTypes;
+    user: User & DefaultSession["user"];
   }
   interface User extends CustomTypes {}
 }
