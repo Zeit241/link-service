@@ -15,7 +15,7 @@ export default function AuthenticationPage() {
     <>
       <div className="container relative h-[800px] max-w-[562px] flex-col items-center justify-center grid sm:grid md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
-          href="/auth/login"
+          href="/login"
           className={cn(
             buttonVariants({ variant: "ghost", size: "sm" }),
             "absolute right-4 top-4 md:right-8 md:top-8"

@@ -1,5 +1,5 @@
 import { Suspense, ReactNode } from "react";
-import DashboardLoading from "@/app/dashboard/loading";
+import DashboardLoading from "@/app/(authenticated)/dashboard/loading";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   themeColor: [

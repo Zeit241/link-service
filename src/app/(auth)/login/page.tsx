@@ -1,11 +1,9 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Command } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/app/(components)/ui/button";
 import { UserAuthForm } from "@/app/(components)/user-auth-form";
-import { SingInSchema } from "@/lib/schema/auth";
 export const metadata: Metadata = {
   title: "Authentication",
   description: "Authentication forms built using the components.",
@@ -16,7 +14,7 @@ export default function AuthenticationPage() {
     <>
       <div className="container relative h-[800px] max-w-[562px] flex-col items-center justify-center grid sm:grid md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
-          href="/auth/registration"
+          href="/registration"
           className={cn(
             buttonVariants({ variant: "ghost", size: "sm" }),
             "absolute right-4 top-4 md:right-8 md:top-8"
