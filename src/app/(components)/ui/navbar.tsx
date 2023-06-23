@@ -1,22 +1,8 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import Icon from "@/../public/img/icon.svg";
-import {
-  Share2 as ShareIcon,
-  Cloud,
-  Github,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { Share2 as ShareIcon, LogOut, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -24,16 +10,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/app/(components)/ui/dropdown-menu";
 import { Button } from "@/app/(components)/ui/button";
-import * as process from "process";
+import { signOut } from "next-auth/react";
 type NavbarProps = {
   username: string;
   main_url: string;
@@ -62,7 +43,6 @@ export default function Navbar(props: NavbarProps): JSX.Element {
             "text-neutral-500 font-semibold items-center flex flex-row current "
           }
         >
-          {/*<SquaresPlusIcon className="h-5 w-5" />*/}
           Links
         </Link>
         <Link
@@ -71,7 +51,6 @@ export default function Navbar(props: NavbarProps): JSX.Element {
             "text-neutral-500 items-center flex flex-row font-semibold"
           }
         >
-          {/*<PaintBrushIcon className={"h-4 w-4"} />*/}
           Appearance
         </Link>
         <Link
@@ -80,7 +59,6 @@ export default function Navbar(props: NavbarProps): JSX.Element {
             "text-neutral-500 items-center flex flex-row font-semibold"
           }
         >
-          {/*<ChartPieIcon className={"h-5 w-5"} />*/}
           Analitics
         </Link>
         <Link
@@ -89,13 +67,10 @@ export default function Navbar(props: NavbarProps): JSX.Element {
             "text-neutral-500 items-center flex flex-row font-semibold"
           }
         >
-          {/*<Cog6ToothIcon className="h-5 w-5" />*/}
           Settings
         </Link>
       </nav>
-      <div className="announcements">
-        {/*<MegaphoneIcon className="h-8 w-8" />*/}
-      </div>
+      <div className="announcements"></div>
       <div className="share-btn">
         <Button>
           <ShareIcon className={"mr-2"} />
@@ -142,7 +117,7 @@ export default function Navbar(props: NavbarProps): JSX.Element {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOut()}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
