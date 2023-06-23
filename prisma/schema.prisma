@@ -62,7 +62,7 @@ model Record {
   description    String?
   profilePicture String
   preferences    Prefences
-  user           User        @relation(fields: [userId], references: [id])
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String      @db.ObjectId
   createdAt      DateTime    @default(now()) @db.Date
   updatedAt      DateTime    @updatedAt
@@ -72,7 +72,7 @@ model Record {
 
 model Link {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  record      Record       @relation(fields: [recordId], references: [id])
+  record      Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
   recordId    String       @db.ObjectId
   order       Int?
   url         String
@@ -90,10 +90,10 @@ model Statistic {
   country   String?
   from      String
   time      Int
-  to        Link     @relation(fields: [toId], references: [id])
+  to        Link     @relation(fields: [toId], references: [id], onDelete: Cascade)
   toId      String   @db.ObjectId
   createdAt DateTime @default(now()) @db.Date
-  link      Record   @relation(fields: [linkId], references: [id])
+  link      Record   @relation(fields: [linkId], references: [id], onDelete: Cascade)
   linkId    String   @db.ObjectId
 }
 
