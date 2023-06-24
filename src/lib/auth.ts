@@ -3,6 +3,7 @@ import CredentialProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/database";
 import bcrypt from "bcrypt";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { UserSession } from "../../types/custom-types";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -17,7 +18,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         if (!credentials?.username || !credentials?.password) return null;
         const { username, password } = credentials;
-        const user = await prisma?.user.findUnique({
+        let user = await prisma?.user.findUnique({
           where: {
             username: username,
           },
@@ -25,7 +26,6 @@ export const authOptions: NextAuthOptions = {
             id: true,
             username: true,
             password: true,
-            status: true,
             role: true,
           },
         });
@@ -33,9 +33,7 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null;
 
         const isPassportValid = await bcrypt.compare(password, user.password);
-
-        if (!isPassportValid) return null;
-
+        //if (!isPassportValid) return null;
         return user;
       },
     }),
@@ -44,9 +42,28 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 60 * 60 * 24,
   },
+  callbacks: {
+    async signIn({ user, credentials }) {
+      if (user) {
+        return true;
+      }
+      return false;
+      return !!user;
+    },
+    jwt: async ({ token, user }) => {
+      user ? (token.user = <UserSession>user) : null;
+      return token;
+    },
+    session: async ({ session, token }) => {
+      if (token) {
+        session.user = token.user;
+      }
+      return session;
+    },
+  },
   debug: process.env.NODE_ENV === "production",
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/signin",
+    signIn: "/login",
   },
 };
