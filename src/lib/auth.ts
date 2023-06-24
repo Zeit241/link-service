@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/database";
-import bcrypt from "bcrypt";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { UserSession } from "../../types/custom-types";
 
@@ -15,7 +14,7 @@ export const authOptions: NextAuthOptions = {
         username: { type: "text" },
         password: { type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) return null;
         const { username, password } = credentials;
         let user = await prisma?.user.findUnique({
@@ -32,7 +31,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        const isPassportValid = await bcrypt.compare(password, user.password);
+        //const isPassportValid = await bcrypt.compare(password, user.password);
         //if (!isPassportValid) return null;
         return user;
       },
@@ -43,11 +42,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 60 * 60 * 24,
   },
   callbacks: {
-    async signIn({ user, credentials }) {
-      if (user) {
-        return true;
-      }
-      return false;
+    async signIn({ user }) {
       return !!user;
     },
     jwt: async ({ token, user }) => {
