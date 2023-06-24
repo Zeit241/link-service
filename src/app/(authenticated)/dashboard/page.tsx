@@ -14,8 +14,8 @@ export default function DashboardPage() {
       <div className={"p-8"}>
         <h1 className={"text-2xl mb-4"}>Your projects</h1>
         <Suspense fallback={<div>Loading...</div>}>
-          {/* @ts-ignore */}
-          <ReactWrapper id={"1"} />
+          {/* @ts-expect-error Async Server Component */}
+          <ReactWrapper />
         </Suspense>
       </div>
     </>
