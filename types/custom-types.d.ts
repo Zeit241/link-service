@@ -1,7 +1,5 @@
-export interface CustomTypes {}
-
-export interface FormValues {
-  error: string;
+export interface UserSession {
+  id: string;
   username: string;
-  password: string;
+  role: "USER" | "ADMIN";
 }
