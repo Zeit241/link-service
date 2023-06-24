@@ -21,7 +21,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/app/(components)/ui/form";
 import { Card } from "@/app/(components)/ui/card";
 
@@ -33,6 +32,9 @@ const createRecordSchema = z.object({
     })
     .max(20, {
       message: "Name must be less than 20 characters",
+    })
+    .regex(/[A-Za-z0-9-._~:/?#\[\]@!$&'()*+,;%=]+/g, {
+      message: "Invalid characters.",
     }),
 });
 export default function CreateCardBtn() {
@@ -91,9 +93,9 @@ export default function CreateCardBtn() {
                         prettylinks.com/
                       </Card>
                       <FormControl
-                        onChange={(e) => {
-                          // console.log(e.target?.value);
-                        }}
+                      // onChange={(e) => {
+                      //   // console.log(e.target?.value);
+                      // }}
                       >
                         <Input
                           className={"border-l-0 rounded-l-none pl-0 "}
@@ -105,9 +107,9 @@ export default function CreateCardBtn() {
                     </div>
 
                     <FormDescription>
+                      {}
                       This is your public display name. It can be changed later.
                     </FormDescription>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
