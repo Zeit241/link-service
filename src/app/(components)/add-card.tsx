@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/app/(components)/ui/button";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +23,8 @@ import {
   FormLabel,
 } from "@/app/(components)/ui/form";
 import { Card } from "@/app/(components)/ui/card";
+import * as React from "react";
+import { useState } from "react";
 
 const createRecordSchema = z.object({
   name: z
@@ -38,6 +40,9 @@ const createRecordSchema = z.object({
     }),
 });
 export default function CreateCardBtn() {
+  const [isNameChecked, setIsNameChecked] = useState<boolean>(false);
+  const [name, setName] = useState<string>("");
+  const [nameError, setNameError] = useState<boolean>(false);
   const form = useForm<z.infer<typeof createRecordSchema>>({
     resolver: zodResolver(createRecordSchema),
     defaultValues: {
@@ -45,7 +50,11 @@ export default function CreateCardBtn() {
     },
   });
 
-  //Generate commit message for this file
+  async function verifyName() {
+    setTimeout(() => {
+      setIsNameChecked(true);
+    }, 1500);
+  }
 
   function onSubmit(values: z.infer<typeof createRecordSchema>) {
     console.log(values);
@@ -70,13 +79,7 @@ export default function CreateCardBtn() {
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              onChange={() => {
-                form.formState;
-              }}
-              className="space-y-8"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="name"
@@ -85,46 +88,44 @@ export default function CreateCardBtn() {
                     <FormLabel>Name</FormLabel>
                     <div className={"flex flex-row items-center "}>
                       <Card
-                        //value={"prettylinks.com/"}
                         className={
                           "border-r-0 w-[120px] items-center flex py-2 px-3 rounded-r-none text-sm h-10 pr-0 leading-none"
                         }
                       >
-                        prettylinks.com/
+                        {"prettylinks.com/"}
                       </Card>
-                      <FormControl
-                      // onChange={(e) => {
-                      //   // console.log(e.target?.value);
-                      // }}
-                      >
+                      <FormControl>
                         <Input
+                          {...field}
+                          autoComplete={"off"}
                           className={"border-l-0 rounded-l-none pl-0 "}
                           placeholder="name"
+                          spellCheck={"false"}
                           type="text"
-                          {...field}
+                          //onChange={(e) => console.log(e.target.value)}
                         />
                       </FormControl>
                     </div>
-
                     <FormDescription>
-                      {}
                       This is your public display name. It can be changed later.
                     </FormDescription>
                   </FormItem>
                 )}
               />
               <DialogFooter>
-                <Button type="submit">Create</Button>
+                <Button
+                  type="submit"
+                  disabled={name === "" || !isNameChecked || nameError}
+                >
+                  {name === "" ? null : isNameChecked ? null : (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Create
+                </Button>
               </DialogFooter>
             </form>
           </Form>
         </DialogContent>
-        {/*<div className="grid gap-4 py-4">*/}
-        {/*  <div className="">*/}
-        {/*    <Label htmlFor="name" className="text-right"></Label>*/}
-        {/*    <Input id="name" value="Pedro Duarte" className="col-span-3" />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
       </Dialog>
     </>
   );
