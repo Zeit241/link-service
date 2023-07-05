@@ -2,10 +2,8 @@
 import { Record } from "@prisma/client";
 import { Card } from "@/app/(components)/ui/card";
 import { useRouter } from "next/navigation";
-import { Button } from "@/app/(components)/ui/button";
 import { Trash } from "lucide-react";
 import { useRef } from "react";
-import ConfirmDelete from "@/app/(components)/confirm-delete";
 import { deleteRecord } from "@/app/server/delete-record";
 import {
   AlertDialog,
@@ -18,14 +16,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/app/(components)/ui/alert-dialog";
+
 export default function RecordCard({ record }: { record: Record }) {
-  //const [AlertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const router = useRouter();
   const navigateToPage = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
       return router.push(`/records/${record.id}`);
-    } else {
-      //return alert("delete");
     }
   };
 
@@ -50,12 +46,14 @@ export default function RecordCard({ record }: { record: Record }) {
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                    your project and remove your data from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => deleteRecord(record.id)}>
+                  <AlertDialogAction
+                    onClick={async () => await deleteRecord(record.id)}
+                  >
                     Continue
                   </AlertDialogAction>
                 </AlertDialogFooter>
