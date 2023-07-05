@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/app/(components)/ui/button";
 import { Input } from "@/app/(components)/ui/input";
-import { Label } from "@/app/(components)/ui/label";
-import { Loader2, Github, EyeOff, Eye } from "lucide-react";
-import SingUp from "@/app/(auth)/server";
+import { Eye, EyeOff, Github, Loader2 } from "lucide-react";
+import SingUp from "@/app/server/sign-up";
 import {
   Form,
   FormControl,
@@ -19,7 +19,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpSchema, SingInSchema } from "@/lib/schema/auth";
-import { useEffect } from "react";
 import { useToast } from "@/lib/hooks/use-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
