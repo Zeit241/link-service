@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 
 export default async function RecordWrapper() {
   const session = await getServerSession(authOptions);
-  console.log(session);
   if (session) {
     const data = await prisma.record.findMany({
       where: {
@@ -20,7 +19,7 @@ export default async function RecordWrapper() {
         {data.map((record: Record) => (
           <RecordCard key={record.id} record={record} />
         ))}
-        <CreateCardBtn />
+        <CreateCardBtn id={session?.user?.id} />
       </div>
     );
   } else {
