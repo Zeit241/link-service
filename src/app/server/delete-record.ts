@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/database";
+import { revalidatePath } from "next/cache";
 
 export const deleteRecord = async (id: string) => {
   const res = await prisma.record.delete({
@@ -8,5 +9,6 @@ export const deleteRecord = async (id: string) => {
       id: id,
     },
   });
+  revalidatePath("/dashboard");
   return res;
 };
