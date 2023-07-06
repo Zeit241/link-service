@@ -82,7 +82,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
     const res = await CreateRecord({ name, id });
 
     if (res.status == 200) {
-      router.push(`dashboard/add/${name}`, {});
+      router.push(`dashboard/modify/${name}`, {});
     }
   }
 

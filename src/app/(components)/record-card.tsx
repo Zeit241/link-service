@@ -21,7 +21,7 @@ export default function RecordCard({ record }: { record: Record }) {
   const router = useRouter();
   const navigateToPage = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
-      return router.push(`/records/${record.id}`);
+      return router.push(`dashboard/modify/${record.url}`);
     }
   };
 

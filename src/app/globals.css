@@ -98,8 +98,17 @@ box-shadow: none!important;
   }
 }
 
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
 @media (max-width: 640px) {
   .container {
     @apply px-4;
   }
 }
+
