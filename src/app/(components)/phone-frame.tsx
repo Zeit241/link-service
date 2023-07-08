@@ -10,7 +10,7 @@ export default function PhoneFrame({ id }: { id: string }) {
   return (
     <div
       className={
-        "w-[320px] h-[620px] border-[15px] rounded-[50px] m-12 overflow-hidden"
+        "w-[320px] h-[620px] border-[15px] rounded-[50px] overflow-hidden"
       }
     >
       {!isLoading && (
