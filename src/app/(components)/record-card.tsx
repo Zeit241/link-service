@@ -21,7 +21,7 @@ export default function RecordCard({ record }: { record: customType }) {
     return router.push(`dashboard/modify/${record.url}`);
     // }
   };
-  console.log(record);
+
   return (
     <>
       <Card

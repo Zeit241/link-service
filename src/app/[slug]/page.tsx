@@ -1,8 +1,8 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import RecordPage from "@/app/(components)/record";
 import { Suspense } from "react";
-import { GetRecord } from "@/app/[slug]/getRecord";
+import { GetRecordLinks } from "@/app/server/get-record-links";
 
 export async function generateMetadata({
   params,
@@ -15,10 +15,11 @@ export async function generateMetadata({
 }
 
 export default async function Home({ params }: { params: { slug: string } }) {
-  const data = await GetRecord(params.slug);
+  const data = await GetRecordLinks(params.slug);
 
   if (!data) {
-    redirect("/404");
+    //redirect("/404");
+    return notFound();
   }
 
   return (
