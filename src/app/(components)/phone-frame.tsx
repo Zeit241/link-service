@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/app/(components)/ui/skeleton";
 
 export default function PhoneFrame({ id }: { id: string }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {}, []);
   return (
     <div
@@ -13,16 +13,16 @@ export default function PhoneFrame({ id }: { id: string }) {
         "w-[320px] h-[620px] border-[15px] rounded-[50px] overflow-hidden"
       }
     >
-      {!isLoading && (
+      {isLoading && (
         <Skeleton className={"w-full h-full flex items-center justify-center"}>
           <Loader2 size={42} className={"animate-spin"} />
         </Skeleton>
       )}
 
       <iframe
-        className={`w-full rounded-3xl h-full ${!isLoading ? "hidden" : ""}`}
+        className={`w-full rounded-3xl h-full ${isLoading ? "hidden" : ""}`}
         src={`/${id}`}
-        onLoad={() => setIsLoading(true)}
+        onLoad={() => setIsLoading(false)}
       ></iframe>
     </div>
   );
