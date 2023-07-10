@@ -29,7 +29,7 @@ export default function Navbar(): JSX.Element {
     return (
       <div
         className={
-          "w-screen flex flex-row items-center bg-slate-900 h-14 pl-4 pr-8"
+          "w-full flex flex-row items-center bg-slate-900 h-14 pl-4 pr-8"
         }
       >
         <div className="logo">
