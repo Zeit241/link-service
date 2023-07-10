@@ -14,7 +14,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function Home({ params }: { params: { slug: string } }) {
+export default async function RecordsPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const data = await GetRecordLinks(params.slug);
 
   if (!data) {
@@ -23,10 +27,10 @@ export default async function Home({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <>
+    <div className={"overflow-x-hidden"}>
       <Suspense fallback={<div>Loading...</div>}>
         <RecordPage data={data} />
       </Suspense>
-    </>
+    </div>
   );
 }
