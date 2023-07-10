@@ -4,7 +4,7 @@ import { Button } from "@/app/(components)/ui/button";
 import { Plus, X } from "lucide-react";
 import { Link, Record } from "@prisma/client";
 import * as React from "react";
-import { useState, useTransition } from "react";
+import { Suspense, useState } from "react";
 import { Card } from "@/app/(components)/ui/card";
 import { Input } from "@/app/(components)/ui/input";
 import { Label } from "@/app/(components)/ui/label";
@@ -14,16 +14,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem } from "@/app/(components)/ui/form";
 import * as punycode from "punycode";
 import CreateLink from "@/app/server/create-link";
-import PhoneFrame from "@/app/(components)/phone-frame";
+import RecordPage from "@/app/(components)/record";
 
 export default function ModifyLinksWrapper({
   record,
 }: {
   record: Record & { Link: Link[] };
 }) {
-  let [isPending, startTransition] = useTransition();
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false);
   const [url, setUrl] = useState<string>("");
+  const [num, setNum] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   async function onSubmit(value: z.infer<typeof createNewLink>) {
     const res = await CreateLink({
@@ -32,7 +33,8 @@ export default function ModifyLinksWrapper({
       record_id: record.id,
       record_url: record.url,
     });
-    setUrl(value.url);
+    setIsLoading(true);
+    setNum(num + 1);
   }
 
   const createNewLink = z.object({
@@ -64,7 +66,7 @@ export default function ModifyLinksWrapper({
     <>
       <div
         className={
-          "flex flex-row justify-between items-center content-center p-24"
+          "flex flex-row justify-between items-center content-center p-8 pb-0 w-full"
         }
       >
         <div className={"border  w-[650px]"}>
@@ -156,7 +158,28 @@ export default function ModifyLinksWrapper({
             })}
           </div>
         </div>
-        <PhoneFrame id={record.url} url={url} />
+        <>
+          <div
+            className={
+              "w-[340px] h-[620px] border-[15px] rounded-[50px] overflow-hidden"
+            }
+          >
+            {/*{isLoading && (*/}
+            {/*  <Skeleton*/}
+            {/*    className={"w-full h-full flex items-center justify-center"}*/}
+            {/*  >*/}
+            {/*    <Loader2 size={42} className={"animate-spin"} />*/}
+            {/*  </Skeleton>*/}
+            {/*)}*/}
+
+            {/*@ts-ignore*/}
+            <div className={"overflow-x-hidden w-full h-full"}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <RecordPage data={record} />
+              </Suspense>
+            </div>
+          </div>
+        </>
       </div>
     </>
   );
