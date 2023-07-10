@@ -90,7 +90,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
         <DialogTrigger asChild>
           <Button
             variant="ghost"
-            className={"w-[150px] h-[175px] border border-dashed"}
+            className={"w-[150px] h-[175px] border border-dashed hover:bg-slate-900"}
           >
             <div className={"flex flex-col gap-3.5 items-center"}>
               <Plus className="h-8 w-8" />
