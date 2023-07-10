@@ -31,7 +31,7 @@ model Record {
   name           String
   description    String?
   profilePicture String
-  preferences    Prefences
+  preferences    Preferences
   user           User        @relation(fields: [userId], references: [id])
   userId         String      @db.ObjectId
   createdAt      DateTime    @default(now()) @db.Date
@@ -78,7 +78,7 @@ enum Status {
   BANNED
 }
 
-type Prefences {
+type Preferences {
   backgroundGradient Boolean @default(false)
   backgroundColor    String  @default("#fff")
 }
