@@ -1,7 +1,11 @@
-"use client";
-import Link from "next/link";
-import { LogOut, Share2 as ShareIcon, User, Webhook } from "lucide-react";
+"use client"
 
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { LogOut, Share2 as ShareIcon, User, Webhook } from "lucide-react"
+import { signOut, useSession } from "next-auth/react"
+
+import { Button } from "@/app/(components)/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,26 +14,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/app/(components)/ui/dropdown-menu";
-import { Button } from "@/app/(components)/ui/button";
-import { signOut, useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import { Skeleton } from "@/app/(components)/ui/skeleton";
+} from "@/app/(components)/ui/dropdown-menu"
+import { Skeleton } from "@/app/(components)/ui/skeleton"
 
 const nav_menu = [
   { path: "dashboard", name: "Links" },
   { path: "settings", name: "Settings" },
   { path: "analytics", name: "Analytics" },
-];
+]
 
 export default function Navbar(): JSX.Element {
-  const pathname = usePathname();
-  const session = useSession();
+  const pathname = usePathname()
+  const session = useSession()
   if (session) {
     return (
       <div
         className={
-          "w-full flex flex-row items-center bg-slate-900 h-14 pl-4 pr-8"
+          "flex h-14 w-full flex-row items-center border-b border-border bg-background pl-4 pr-8"
         }
       >
         <div className="logo">
@@ -39,20 +40,20 @@ export default function Navbar(): JSX.Element {
             className={"mr-4 hover:animate-spin"}
           />
         </div>
-        <nav className="list flex flex-row gap-6 flex-1">
+        <nav className="list flex flex-1 flex-row gap-6">
           {nav_menu.map((e: { path: string; name: string }) => {
             const is_current_page = pathname.startsWith(`/${e.path}`)
               ? "text-primary"
-              : "text-muted-foreground hover:text-primary";
+              : "text-muted-foreground hover:text-primary"
             return (
               <Link
                 key={e.path}
                 href={`/${e.path}`}
-                className={`text-sm font-medium tracking-wider transition-colors  items-center flex flex-row ${is_current_page}`}
+                className={`flex flex-row items-center text-sm  font-medium tracking-wider transition-colors ${is_current_page}`}
               >
                 {e.name}
               </Link>
-            );
+            )
           })}
         </nav>
         <div className="announcements"></div>
@@ -68,7 +69,7 @@ export default function Navbar(): JSX.Element {
               <Button
                 variant="outline"
                 className={
-                  "rounded-full w-11 h-11 font-semibold text-xl bg-gray-600"
+                  "h-11 w-11 rounded-full bg-gray-600 text-xl font-semibold"
                 }
               >
                 {session.data?.user.username.charAt(0).toUpperCase()}
@@ -78,21 +79,21 @@ export default function Navbar(): JSX.Element {
               <DropdownMenuGroup>
                 <div
                   className={
-                    "w-full flex flex-row pt-3 pr-3 pl-1 pr-1 items-center"
+                    "flex w-full flex-row items-center pl-1 pr-1 pr-3 pt-3"
                   }
                 >
-                  <div className="rounded-full w-11 h-11 font-semibold text-xl bg-gray-800 flex items-center justify-center mr-2">
+                  <div className="mr-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 text-xl font-semibold">
                     {session.data?.user.username.charAt(0).toUpperCase()}
                   </div>
                   <div className="">
-                    <h2 className={"font-bold text-lg p-0"}>
+                    <h2 className={"p-0 text-lg font-bold"}>
                       @{session.data?.user.username}
                     </h2>
-                    <span className={"text-gray-400 text-sm"}></span>
+                    <span className={"text-sm text-gray-400"}></span>
                   </div>
                 </div>
               </DropdownMenuGroup>
-              <DropdownMenuLabel className={"mt-3 mr-1.5 text-[0.95rem]"}>
+              <DropdownMenuLabel className={"mr-1.5 mt-3 text-[0.95rem]"}>
                 Account
               </DropdownMenuLabel>
               <DropdownMenuGroup>
@@ -110,8 +111,8 @@ export default function Navbar(): JSX.Element {
           </DropdownMenu>
         </div>
       </div>
-    );
+    )
   } else {
-    return <Skeleton className={"w-full h-14"}></Skeleton>;
+    return <Skeleton className={"h-14 w-full"}></Skeleton>
   }
 }

@@ -1,30 +1,32 @@
-"use client";
+"use client"
 
-import { Button } from "@/app/(components)/ui/button";
-import { Plus, X } from "lucide-react";
-import { Link, Record } from "@prisma/client";
-import * as React from "react";
-import { Suspense, useState } from "react";
-import { Card } from "@/app/(components)/ui/card";
-import { Input } from "@/app/(components)/ui/input";
-import { Label } from "@/app/(components)/ui/label";
-import { z } from "zod";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItem } from "@/app/(components)/ui/form";
-import * as punycode from "punycode";
-import CreateLink from "@/app/server/create-link";
-import RecordPage from "@/app/(components)/record";
+import * as punycode from "punycode"
+import * as React from "react"
+import { Suspense, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Link, Record } from "@prisma/client"
+import { Plus, X } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
+
+import ModifyLinkCard from "@/app/(components)/modify-link-card"
+import RecordPage from "@/app/(components)/record"
+import { Button } from "@/app/(components)/ui/button"
+import { Card } from "@/app/(components)/ui/card"
+import { Form, FormField, FormItem } from "@/app/(components)/ui/form"
+import { Input } from "@/app/(components)/ui/input"
+import { Label } from "@/app/(components)/ui/label"
+import CreateLink from "@/app/server/create-link"
 
 export default function ModifyLinksWrapper({
   record,
 }: {
-  record: Record & { Link: Link[] };
+  record: Record & { Link: Link[] }
 }) {
-  const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>("");
-  const [num, setNum] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false)
+  const [url, setUrl] = useState<string>("")
+  const [num, setNum] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   async function onSubmit(value: z.infer<typeof createNewLink>) {
     const res = await CreateLink({
@@ -32,9 +34,10 @@ export default function ModifyLinksWrapper({
       name: value.url,
       record_id: record.id,
       record_url: record.url,
-    });
-    setIsLoading(true);
-    setNum(num + 1);
+      order: record.Link.length,
+    })
+    setIsLoading(true)
+    setNum(num + 1)
   }
 
   const createNewLink = z.object({
@@ -48,12 +51,12 @@ export default function ModifyLinksWrapper({
             "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
             "(\\#[-a-z\\d_]*)?$", // fragment locator
           "i"
-        );
-        return pattern.test(punycode.toASCII(value));
+        )
+        return pattern.test(punycode.toASCII(value))
       },
       { message: "Invalid URL" }
     ),
-  });
+  })
   const form = useForm<z.infer<typeof createNewLink>>({
     resolver: zodResolver(createNewLink),
     mode: "onChange",
@@ -61,31 +64,31 @@ export default function ModifyLinksWrapper({
     defaultValues: {
       url: "",
     },
-  });
+  })
   return (
     <>
       <div
         className={
-          "flex flex-row justify-between items-center content-center p-8 pb-0 w-full"
+          "flex w-full flex-row content-center items-center justify-between p-8 pb-0"
         }
       >
-        <div className={"border  w-[650px]"}>
+        <div className={"w-[650px]  border"}>
           <div
             className={
-              "flex items-center justify-center flex-col gap-5 pt-4 pb-4"
+              "flex flex-col items-center justify-center gap-5 pb-4 pt-4"
             }
           >
             {!isAddCardOpen && (
               <Button
                 variant="secondary"
-                className=" p-4 w-4/5"
+                className=" w-4/5 p-4"
                 onClick={() => setIsAddCardOpen(true)}
               >
                 <Plus /> Add new link
               </Button>
             )}
             {isAddCardOpen && (
-              <Card className={"flex flex-col gap-4 p-4 w-4/5"}>
+              <Card className={"flex w-4/5 flex-col gap-4 p-4"}>
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -99,7 +102,7 @@ export default function ModifyLinksWrapper({
                           <FormItem>
                             <div
                               className={
-                                "flex flex-row items-center justify-between w-full"
+                                "flex w-full flex-row items-center justify-between"
                               }
                             >
                               <Label htmlFor={"link"}>Enter URL</Label>
@@ -107,13 +110,13 @@ export default function ModifyLinksWrapper({
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => {
-                                  setIsAddCardOpen(false);
+                                  setIsAddCardOpen(false)
                                 }}
                               >
                                 <X size={18} />
                               </Button>
                             </div>
-                            <div className={"flex-row flex gap-3 items-center"}>
+                            <div className={"flex flex-row items-center gap-3"}>
                               <Controller
                                 name="url"
                                 control={form.control}
@@ -149,19 +152,23 @@ export default function ModifyLinksWrapper({
               </Card>
             )}
 
-            {record.Link.map((link: Link, index: number) => {
+            {record.Link.map((link: Link, index: number, array: Link[]) => {
               return (
-                <div className={"border p-5 w-4/5"} key={index}>
-                  {link.name}
+                <div className={"w-4/5 border p-5"} key={index}>
+                  <ModifyLinkCard
+                    link={link}
+                    index={index}
+                    max={array.length}
+                  />
                 </div>
-              );
+              )
             })}
           </div>
         </div>
         <>
           <div
             className={
-              "w-[340px] h-[620px] border-[15px] rounded-[50px] overflow-hidden"
+              "h-[620px] w-[340px] overflow-hidden rounded-[50px] border-[15px]"
             }
           >
             {/*{isLoading && (*/}
@@ -173,7 +180,7 @@ export default function ModifyLinksWrapper({
             {/*)}*/}
 
             {/*@ts-ignore*/}
-            <div className={"overflow-x-hidden w-full h-full"}>
+            <div className={"h-full w-full overflow-x-hidden"}>
               <Suspense fallback={<div>Loading...</div>}>
                 <RecordPage data={record} />
               </Suspense>
@@ -182,5 +189,5 @@ export default function ModifyLinksWrapper({
         </>
       </div>
     </>
-  );
+  )
 }

@@ -1,16 +1,18 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/database";
+import { revalidatePath } from "next/cache"
+
+import { prisma } from "@/lib/database"
 
 interface UpdateLinkProps {
-  url?: string;
-  name?: string;
-  order?: number;
-  enabled?: boolean;
+  url?: string
+  name?: string
+  order?: number
+  enabled?: boolean
 }
 
 export default async function UpdateLink(
-    id:string,
+  id: string,
   data: UpdateLinkProps
 ): Promise<{ status: number; message: string }> {
   const link = await prisma.link.update({
@@ -18,7 +20,7 @@ export default async function UpdateLink(
       id: id,
     },
     data: data,
-  });
-
-  return { status: 200, message: "Done!" };
+  })
+  revalidatePath("/dashboard/modify/" + data.url)
+  return { status: 200, message: "Done!" }
 }
