@@ -1,13 +1,15 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/database";
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache"
+
+import { prisma } from "@/lib/database"
 
 interface CreateLinkProps {
-  record_id: string;
-  url: string;
-  name: string;
-  record_url: string;
+  record_id: string
+  url: string
+  name: string
+  record_url: string
+  order?: number
 }
 
 export default async function CreateLink(
@@ -19,13 +21,15 @@ export default async function CreateLink(
         name: data.name,
         url: data.name,
         recordId: data.record_id,
+        order: data.order || 0,
       },
-    });
-    revalidatePath("/dashboard/modify/" + data.record_url);
-    revalidatePath("/" + data.record_url);
-    return { status: 200, message: "Done!" };
+    })
+    revalidatePath("/dashboard/modify/" + data.record_url)
+    revalidatePath("/" + data.record_url)
+    console.log(link)
+    return { status: 200, message: "Done!" }
   } catch (e) {
-    console.log(e);
-    return { status: 500, message: "Internal server error" };
+    console.log(e)
+    return { status: 500, message: "Internal server error" }
   }
 }

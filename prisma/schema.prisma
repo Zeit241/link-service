@@ -75,7 +75,7 @@ model Link {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   record      Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
   recordId    String       @db.ObjectId
-  order       Int?
+  order       Int?         @default(0)
   url         String
   name        String
   enabled     Boolean      @default(true)
