@@ -87,9 +87,24 @@ html {
 }
 
 body {
+  overflow-x: hidden;
+  max-width: 100%;
   height: 100%;
 }
 
 .input_without_border:focus-visible {
   box-shadow: none !important;
+}
+
+*::-webkit-scrollbar {
+  width: 0.2em;
+}
+
+*::-webkit-scrollbar-track {
+  -webkit-box-shadow: var(--muted)
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: hsl(240 5% 64.9%);
+  outline: 1px solid var(--foreground);
 }
