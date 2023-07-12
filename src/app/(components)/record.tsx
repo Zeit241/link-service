@@ -1,21 +1,23 @@
-"use client";
-import { Link, Record } from "@prisma/client";
-import LinkItem from "@/app/(components)/link";
+"use client"
+
+import { Link, Record } from "@prisma/client"
+
+import LinkItem from "@/app/(components)/link"
 
 type RecordProps = {
-  data: Record & { Link: Link[] };
-};
+  data: Record & { Link: Link[] }
+}
 
 export default function RecordPage({ data }: RecordProps) {
   return (
     <div
-      className={`w-full min-h-full flex flex-col`}
-      style={{ backgroundColor: data.preferences.backgroundColor }}
+      className={`flex min-h-full w-full flex-col bg-background`}
+      //style={{ backgroundColor: data.preferences.backgroundColor }}
     >
-      <nav className={"flex items-center flex-col p-8"}>
+      <nav className={"flex flex-col items-center p-8"}>
         <div
           className={
-            "w-20 h-20 rounded-full bg-black text-center text-white text-4xl flex items-center justify-center select-none"
+            "flex h-20 w-20 select-none items-center justify-center rounded-full bg-muted-foreground text-center text-4xl text-white"
           }
         >
           {data.name.charAt(0).toUpperCase()}
@@ -26,7 +28,7 @@ export default function RecordPage({ data }: RecordProps) {
       </nav>
       <section
         className={
-          "flex items-center m-0 flex-col justify-start flex-1 h-full w-full gap-6"
+          "m-0 flex h-full w-full flex-1 flex-col items-center justify-start gap-4"
         }
         style={{
           margin: "0 auto",
@@ -36,9 +38,9 @@ export default function RecordPage({ data }: RecordProps) {
           <LinkItem key={link.id} Link={link} />
         ))}
       </section>
-      <div className={"mt-12 mb-2 justify-center items-center flex"}>
-        <h1 className={"justify-center items-center"}>PRETTY LINKS</h1>
+      <div className={"mb-2 mt-12 flex items-center justify-center"}>
+        <h1 className={"items-center justify-center"}>PRETTY LINKS</h1>
       </div>
     </div>
-  );
+  )
 }
