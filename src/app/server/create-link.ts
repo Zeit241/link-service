@@ -6,9 +6,9 @@ import { prisma } from "@/lib/database"
 
 interface CreateLinkProps {
   record_id: string
+  record_name: string
   url: string
   name: string
-  record_url: string
   order?: number
 }
 
@@ -24,8 +24,8 @@ export default async function CreateLink(
         order: data.order || 0,
       },
     })
-    revalidatePath("/dashboard/modify/" + data.record_url)
-    revalidatePath("/" + data.record_url)
+    revalidatePath("/dashboard/modify/" + data.record_name)
+    revalidatePath("/" + data.record_name)
     console.log(link)
     return { status: 200, message: "Done!" }
   } catch (e) {
