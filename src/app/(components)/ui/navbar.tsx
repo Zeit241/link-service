@@ -40,7 +40,7 @@ export default function Navbar(): JSX.Element {
             className={"mr-4 hover:animate-spin"}
           />
         </div>
-        <nav className="list flex flex-1 flex-row gap-6">
+        <nav className="list flex flex-1 flex-row gap-3 xs:gap-2 sm:gap-4">
           {nav_menu.map((e: { path: string; name: string }) => {
             const is_current_page = pathname.startsWith(`/${e.path}`)
               ? "text-primary"
@@ -49,7 +49,7 @@ export default function Navbar(): JSX.Element {
               <Link
                 key={e.path}
                 href={`/${e.path}`}
-                className={`flex flex-row items-center text-sm  font-medium tracking-wider transition-colors ${is_current_page}`}
+                className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}
               >
                 {e.name}
               </Link>
@@ -57,7 +57,7 @@ export default function Navbar(): JSX.Element {
           })}
         </nav>
         <div className="announcements"></div>
-        <div className="share-btn">
+        <div className="share-btn hidden md:flex lg:flex xl:flex ">
           <Button size={"sm"}>
             <ShareIcon className={"mr-2 "} />
             Share
