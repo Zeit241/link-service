@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Link } from "@prisma/client"
-import { ChevronDown, ChevronUp, Edit2 } from "lucide-react"
+import { ChevronDown, ChevronUp, Pencil } from "lucide-react"
 
 import useOutsideClick from "@/lib/hooks/use-outside-click"
 import { Card } from "@/app/(components)/ui/card"
 import { Input } from "@/app/(components)/ui/input"
+import { Switch } from "@/app/(components)/ui/switch"
 import UpdateLink from "@/app/server/update-link"
 
 type ModifyLinkCardProps = {
@@ -21,12 +22,17 @@ export default function ModifyLinkCard({
   max,
 }: ModifyLinkCardProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isEnabled, setIsEnabled] = useState<boolean>(link.enabled)
+
   const [isNameEditing, setIsNameEditing] = useState<boolean>(false)
   const [isUrlEditing, setIsUrlEditing] = useState<boolean>(false)
+
   const [name_value, setNameValue] = useState<string>(link.name)
   const [url_value, setUrlValue] = useState<string>(link.url)
+
   const name = useRef<any>()
   const url = useRef<any>()
+
   useEffect(() => {
     name.current.focus()
     name.current.setSelectionRange(name_value.length, name_value.length)
@@ -59,7 +65,7 @@ export default function ModifyLinkCard({
   }
   return (
     <>
-      <Card className={"flex flex-row  p-2"}>
+      <Card className={"flex w-full flex-row border p-3"}>
         <div className={"mr-4 flex flex-col gap-0.5"}>
           <ChevronUp
             className={"cursor-pointer hover:scale-125"}
@@ -71,16 +77,20 @@ export default function ModifyLinkCard({
             onClick={index < max ? increase_link_index : () => {}}
           />
         </div>
-        <div className={"flex flex-col"}>
-          <div className={"flex flex-col"}>
-            <>
-              <div className={"flex flex-row items-center gap-2.5 "}>
+        <div
+          className={
+            "flex w-full  flex-row items-center justify-between pl-1 pr-3"
+          }
+        >
+          <div className={"flex w-full flex-col overflow-x-hidden"}>
+            <div className={"flex flex-row items-center justify-between "}>
+              <div className={"flex flex-row items-center gap-2 "}>
                 {!isNameEditing && (
                   <>
-                    <span className={"text-lg font-semibold"}>
+                    <span className={"text-ellipsis text-lg font-semibold"}>
                       {name_value}
                     </span>
-                    <Edit2
+                    <Pencil
                       size={14}
                       className={"cursor-pointer hover:scale-110"}
                       onClick={() => {
@@ -99,34 +109,53 @@ export default function ModifyLinkCard({
                 onChange={(e) => setNameValue(e.target.value)}
                 ref={name}
               />
-            </>
-            <div className={"flex flex-row items-center justify-between gap-2"}>
-              <>
-                <div className={"flex flex-row items-center gap-2.5 "}>
-                  {!isUrlEditing && (
-                    <>
-                      <span className={"text-lg "}>{link.url}</span>
-                      <Edit2
-                        size={14}
-                        className={"cursor-pointer hover:scale-110"}
-                        onClick={() => {
-                          setIsNameEditing(true)
-                        }}
-                      />
-                    </>
-                  )}
-                </div>
-                <Input
-                  className={`input_without_border h-fit rounded-none border-0 p-0 text-base text-lg ${
-                    isUrlEditing ? "" : "hidden"
-                  }`}
-                  spellCheck={false}
-                  defaultValue={url_value}
-                  onChange={(e) => setUrlValue(e.target.value)}
-                  ref={url}
-                />
-              </>
             </div>
+            <div className={"flex flex-row items-center justify-between "}>
+              <div
+                className={
+                  "flex w-fit max-w-[75%] flex-row items-center gap-2 "
+                }
+              >
+                {!isUrlEditing && (
+                  <>
+                    <span
+                      className={
+                        "w-full overflow-hidden text-ellipsis whitespace-nowrap text-base text-muted-foreground"
+                      }
+                    >
+                      {link.url}
+                    </span>
+                    <Pencil
+                      size={18}
+                      className={"cursor-pointer hover:scale-110"}
+                      onClick={() => {
+                        setIsUrlEditing(true)
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+              <Input
+                className={`input_without_border h-fit rounded-none border-0 p-0 text-base text-muted-foreground ${
+                  isUrlEditing ? "" : "hidden"
+                }`}
+                spellCheck={false}
+                defaultValue={url_value}
+                onChange={(e) => setUrlValue(e.target.value)}
+                ref={url}
+              />
+            </div>
+          </div>
+          <div>
+            <Switch
+              checked={isEnabled}
+              onCheckedChange={async () => {
+                setIsLoading(true)
+                setIsEnabled(!isEnabled)
+                await UpdateLink(link.id, { enabled: !link.enabled })
+                setIsLoading(false)
+              }}
+            />
           </div>
         </div>
       </Card>

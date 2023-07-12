@@ -2,7 +2,7 @@
 
 import * as punycode from "punycode"
 import * as React from "react"
-import { Suspense, useState } from "react"
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, Record } from "@prisma/client"
 import { Plus, X } from "lucide-react"
@@ -33,7 +33,7 @@ export default function ModifyLinksWrapper({
       url: value.url,
       name: value.url,
       record_id: record.id,
-      record_url: record.url,
+      record_name: record.name,
       order: record.Link.length,
     })
     setIsLoading(true)
@@ -68,27 +68,25 @@ export default function ModifyLinksWrapper({
   return (
     <>
       <div
-        className={
-          "flex w-full flex-row content-center items-center justify-between p-8 pb-0"
-        }
+        className={"flex w-full flex-row items-start justify-center p-8 pb-0"}
       >
-        <div className={"w-[650px]  border"}>
-          <div
-            className={
-              "flex flex-col items-center justify-center gap-5 pb-4 pt-4"
-            }
-          >
+        <div className={"flex flex-1 flex-wrap items-center  justify-center"}>
+          <div className={"flex w-full flex-col items-center gap-5 pb-4 pt-4"}>
             {!isAddCardOpen && (
               <Button
                 variant="secondary"
-                className=" w-4/5 p-4"
+                className="max-w-xl p-4 min-[320px]:w-[95%]"
                 onClick={() => setIsAddCardOpen(true)}
               >
                 <Plus /> Add new link
               </Button>
             )}
             {isAddCardOpen && (
-              <Card className={"flex w-4/5 flex-col gap-4 p-4"}>
+              <Card
+                className={
+                  "flex max-w-xl flex-col gap-4 p-4 min-[320px]:w-[95%]"
+                }
+              >
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -154,7 +152,7 @@ export default function ModifyLinksWrapper({
 
             {record.Link.map((link: Link, index: number, array: Link[]) => {
               return (
-                <div className={"w-4/5 border p-5"} key={index}>
+                <div className={"max-w-xl min-[320px]:w-[95%]"} key={index}>
                   <ModifyLinkCard
                     link={link}
                     index={index}
@@ -165,28 +163,16 @@ export default function ModifyLinksWrapper({
             })}
           </div>
         </div>
-        <>
-          <div
-            className={
-              "h-[620px] w-[340px] overflow-hidden rounded-[50px] border-[15px]"
-            }
-          >
-            {/*{isLoading && (*/}
-            {/*  <Skeleton*/}
-            {/*    className={"w-full h-full flex items-center justify-center"}*/}
-            {/*  >*/}
-            {/*    <Loader2 size={42} className={"animate-spin"} />*/}
-            {/*  </Skeleton>*/}
-            {/*)}*/}
 
-            {/*@ts-ignore*/}
-            <div className={"h-full w-full overflow-x-hidden"}>
-              <Suspense fallback={<div>Loading...</div>}>
-                <RecordPage data={record} />
-              </Suspense>
-            </div>
+        <div
+          className={
+            "sticky top-[22%] mr-6 hidden h-[620px] w-[320px] min-w-[320px] overflow-hidden rounded-[50px] border-[15px] md:block lg:block xl:block"
+          }
+        >
+          <div className={"h-full w-full overflow-x-hidden "}>
+            <RecordPage data={record} />
           </div>
-        </>
+        </div>
       </div>
     </>
   )
