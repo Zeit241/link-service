@@ -1,12 +1,12 @@
-import { UserSession } from "./custom-types";
+import {UserSession} from "./custom-types"
 
 declare module "next-auth/jwt" {
-  interface JWT {
-    user: UserSession;
-  }
+    interface JWT {
+        user: UserSession
+    }
 }
 declare module "next-auth" {
-  interface Session {
-    user: UserSession;
-  }
+    interface Session {
+        user: UserSession
+    }
 }

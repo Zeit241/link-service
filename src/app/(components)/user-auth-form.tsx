@@ -1,11 +1,18 @@
-"use client";
-import * as React from "react";
-import { useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/app/(components)/ui/button";
-import { Input } from "@/app/(components)/ui/input";
-import { Eye, EyeOff, Github, Loader2 } from "lucide-react";
-import SingUp from "@/app/server/sign-up";
+"use client"
+
+import * as React from "react"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Eye, EyeOff, Github, Loader2 } from "lucide-react"
+import { signIn } from "next-auth/react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { useToast } from "@/lib/hooks/use-toast"
+import { SignUpSchema, SingInSchema } from "@/lib/schema/auth"
+import { cn } from "@/lib/utils"
+import { Button } from "@/app/(components)/ui/button"
 import {
   Form,
   FormControl,
@@ -14,41 +21,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/app/(components)/ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SignUpSchema, SingInSchema } from "@/lib/schema/auth";
-import { useToast } from "@/lib/hooks/use-toast";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+} from "@/app/(components)/ui/form"
+import { Input } from "@/app/(components)/ui/input"
+import SingUp from "@/app/server/sign-up"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
-  type: "signin" | "signup";
+  type: "signin" | "signup"
 }
 
-type FormType = typeof SignUpSchema | typeof SingInSchema;
+type FormType = typeof SignUpSchema | typeof SingInSchema
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const type = props.type === "signup" ? SignUpSchema : SingInSchema;
+  const type = props.type === "signup" ? SignUpSchema : SingInSchema
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const [isUsernameInUrl, setIsUsernameInUrl] = React.useState<null | string>(
     null
-  );
-  const [formType, setFormType] = React.useState<FormType>(type);
+  )
+  const [formType, setFormType] = React.useState<FormType>(type)
   useEffect(() => {
-    setFormType(type);
+    setFormType(type)
 
     if (window.location.href.includes("username=")) {
-      const url = new URL(window.location.href);
-      setIsUsernameInUrl(url.searchParams.get("username"));
+      const url = new URL(window.location.href)
+      setIsUsernameInUrl(url.searchParams.get("username"))
     }
-  }, [props.type]);
+  }, [props.type])
 
-  const { toast } = useToast();
-  const router = useRouter();
+  const { toast } = useToast()
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formType>>({
     resolver: zodResolver(formType),
@@ -56,45 +58,45 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       username: isUsernameInUrl ?? "",
       password: "",
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof formType>) {
-    setIsLoading(true);
+    setIsLoading(true)
 
     if (props.type === "signup") {
       const response = await SingUp({
         username: values.username,
         password: values.password,
-      });
+      })
 
       if (response.status === 200) {
-        setIsLoading(false);
+        setIsLoading(false)
         setTimeout(() => {
           toast({
             variant: "default",
             title: "Success",
             description: "Account created successfully",
-          });
-          router.push("/login?username=" + values.username);
-        }, 2000);
+          })
+          router.push("/login?username=" + values.username)
+        }, 2000)
       }
     } else {
       const response = await signIn("credentials", {
         username: values.username,
         password: values.password,
         redirect: false,
-      });
+      })
 
       if (!response?.error) {
-        setIsLoading(false);
-        router.push("/dashboard");
+        setIsLoading(false)
+        router.push("/dashboard")
       } else {
-        setIsLoading(false);
+        setIsLoading(false)
         toast({
           variant: "destructive",
           title: "Error",
           description: "Username or password is incorrect",
-        });
+        })
       }
     }
   }
@@ -140,7 +142,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                       <FormControl>
                         <Input
                           {...field}
-                          className={"border-r-0 rounded-r-none shadow-none"}
+                          className={"rounded-r-none border-r-0 shadow-none"}
                           id="password"
                           placeholder="Password"
                           type={showPassword ? "text" : "password"}
@@ -156,12 +158,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                       </FormControl>
                       <Button
                         className={
-                          "bg-transparent border-l-0 rounded-l-none hover:bg-transparent"
+                          "rounded-l-none border-l-0 bg-transparent hover:bg-transparent"
                         }
                         type="button"
                         variant="outline"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
+                        onClick={() => setShowPassword(!showPassword)}>
                         {showPassword ? (
                           <EyeOff size={15} />
                         ) : (
@@ -227,5 +228,5 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         Github
       </Button>
     </div>
-  );
+  )
 }

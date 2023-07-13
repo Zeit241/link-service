@@ -1,10 +1,10 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/database"
 
 interface CreateRecordProps {
-  name: string;
-  id: string;
+  name: string
+  id: string
 }
 
 export default async function CreateRecord(
@@ -18,7 +18,7 @@ export default async function CreateRecord(
       preferences: {},
       userId: data.id,
     },
-  });
-  console.log(is_username_taken);
-  return { status: 200, message: "Done!" };
+  })
+  console.log(is_username_taken)
+  return { status: 200, message: "Done!" }
 }

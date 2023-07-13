@@ -1,3 +1,3 @@
 export default function SettingsLoader() {
-  return <div>Loading...</div>;
+    return <div>Loading...</div>
 }

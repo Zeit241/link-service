@@ -1,9 +1,9 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/database"
 
 interface VerifyRecordNameProps {
-  name: string;
+  name: string
 }
 
 export default async function VerifyRecordName(
@@ -13,10 +13,10 @@ export default async function VerifyRecordName(
     where: {
       url: data.name,
     },
-  });
-  console.log(is_username_taken);
+  })
+  console.log(is_username_taken)
   if (is_username_taken > 0) {
-    return { status: 403, message: "Name already taken" };
+    return { status: 403, message: "Name already taken" }
   }
-  return { status: 200, message: "Name is not taken" };
+  return { status: 200, message: "Name is not taken" }
 }

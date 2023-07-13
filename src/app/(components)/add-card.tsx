@@ -94,8 +94,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
             variant="ghost"
             className={
               "h-[175px] w-[150px] border border-dashed hover:bg-muted"
-            }
-          >
+            }>
             <div className={"flex flex-col items-center gap-3.5"}>
               <Plus className="h-8 w-8" />
               <p>Add new project</p>
@@ -113,8 +112,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               onChange={() => setName(form.getValues().name)}
-              className="space-y-8"
-            >
+              className="space-y-8">
               <FormField
                 control={form.control}
                 name="name"
@@ -138,8 +136,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
                                     : isNameChecked
                                     ? "border-green-500"
                                     : ""
-                                }`}
-                              >
+                                }`}>
                                 {"prettylinks.com/"}
                               </Card>
                               <Input
@@ -175,8 +172,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
                 <Button
                   className={"select-none"}
                   type="submit"
-                  disabled={!isNameChecked || nameError || name.length < 5}
-                >
+                  disabled={!isNameChecked || nameError || name.length < 5}>
                   {isNameChecked || nameError || name.length < 5 ? null : (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}

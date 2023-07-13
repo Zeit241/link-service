@@ -1,13 +1,12 @@
 //TODO: Currently not working because of next 13 beta
 
-import Link from "next/link";
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Home",
   description: "Welcome to Next.js",
-};
+}
 
 export default function NotFound() {
   //redirect("/404");
@@ -20,5 +19,5 @@ export default function NotFound() {
         <Link href={"/signup"}>Create free account</Link>.
       </p>
     </>
-  );
+  )
 }

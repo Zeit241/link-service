@@ -37,8 +37,7 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
       <Card className={"flex min-h-[175px] flex-col p-5 hover:bg-muted"}>
         <div
           className={"flex w-full cursor-pointer flex-col"}
-          onClick={(e) => navigateToPage(e)}
-        >
+          onClick={(e) => navigateToPage(e)}>
           <div className={"mb-1 flex flex-row items-center justify-between"}>
             <h1 className={"flex flex-wrap text-2xl font-bold uppercase"}>
               {record.name}
@@ -55,15 +54,13 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
                 {recordEnabled ? "Enabled" : "Disabled"}
               </Badge>
               <Badge
-                variant={record.Link.length > 0 ? "secondary" : "destructive"}
-              >
+                variant={record.Link.length > 0 ? "secondary" : "destructive"}>
                 {record.Link.length + " links"}
               </Badge>
               <Badge
                 variant={
                   record.Statistic.length > 0 ? "secondary" : "destructive"
-                }
-              >
+                }>
                 {record.Statistic.length + " clicks"}
               </Badge>
             </div>
@@ -95,8 +92,7 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={async () => await deleteRecord(record.id)}
-                >
+                  onClick={async () => await deleteRecord(record.id)}>
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>

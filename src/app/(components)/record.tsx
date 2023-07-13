@@ -6,6 +6,7 @@ import LinkItem from "@/app/(components)/link"
 
 type RecordProps = {
   data: Record & { Link: Link[] }
+  links?: Link[]
 }
 
 export default function RecordPage({ data }: RecordProps) {
@@ -18,8 +19,7 @@ export default function RecordPage({ data }: RecordProps) {
         <div
           className={
             "flex h-20 w-20 select-none items-center justify-center rounded-full bg-muted-foreground text-center text-4xl text-white"
-          }
-        >
+          }>
           {data.name.charAt(0).toUpperCase()}
         </div>
 
@@ -32,8 +32,7 @@ export default function RecordPage({ data }: RecordProps) {
         }
         style={{
           margin: "0 auto",
-        }}
-      >
+        }}>
         {data.Link.map((link: Link) => (
           <LinkItem key={link.id} Link={link} />
         ))}

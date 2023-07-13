@@ -1,11 +1,12 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/database";
-import { Prisma } from ".prisma/client";
+import { prisma } from "@/lib/database"
+
+import { Prisma } from ".prisma/client"
 
 interface UserAuthFormProps {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }
 
 export default async function SingUp(
@@ -18,8 +19,8 @@ export default async function SingUp(
         password: data.password,
         role: "USER",
       },
-    });
-    return { status: 200, message: "User created" };
+    })
+    return { status: 200, message: "User created" }
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
@@ -27,9 +28,9 @@ export default async function SingUp(
           status: 403,
           message:
             "There is a unique constraint violation, a new user cannot be created with this email",
-        };
+        }
       }
     }
   }
-  return { status: 500, message: "Internal server error" };
+  return { status: 500, message: "Internal server error" }
 }

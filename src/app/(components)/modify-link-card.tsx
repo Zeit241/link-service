@@ -80,8 +80,7 @@ export default function ModifyLinkCard({
         <div
           className={
             "flex w-full  flex-row items-center justify-between pl-1 pr-3"
-          }
-        >
+          }>
           <div className={"flex w-full flex-col overflow-x-hidden"}>
             <div className={"flex flex-row items-center justify-between "}>
               <div className={"flex flex-row items-center gap-2 "}>
@@ -114,15 +113,13 @@ export default function ModifyLinkCard({
               <div
                 className={
                   "flex w-fit max-w-[75%] flex-row items-center gap-2 "
-                }
-              >
+                }>
                 {!isUrlEditing && (
                   <>
                     <span
                       className={
                         "w-full overflow-hidden text-ellipsis whitespace-nowrap text-base text-muted-foreground"
-                      }
-                    >
+                      }>
                       {link.url}
                     </span>
                     <Pencil

@@ -1,5 +1,5 @@
 export interface UserSession {
-  id: string;
-  username: string;
-  role: "USER" | "ADMIN";
+    id: string
+    username: string
+    role: "USER" | "ADMIN"
 }

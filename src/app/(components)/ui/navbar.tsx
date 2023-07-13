@@ -31,8 +31,7 @@ export default function Navbar(): JSX.Element {
       <div
         className={
           "flex h-14 w-full flex-row items-center border-b border-border bg-background pl-4 pr-8"
-        }
-      >
+        }>
         <div className="logo">
           <Webhook
             width={35}
@@ -49,8 +48,7 @@ export default function Navbar(): JSX.Element {
               <Link
                 key={e.path}
                 href={`/${e.path}`}
-                className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}
-              >
+                className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}>
                 {e.name}
               </Link>
             )
@@ -70,8 +68,7 @@ export default function Navbar(): JSX.Element {
                 variant="outline"
                 className={
                   "h-11 w-11 rounded-full bg-gray-600 text-xl font-semibold"
-                }
-              >
+                }>
                 {session.data?.user.username.charAt(0).toUpperCase()}
               </Button>
             </DropdownMenuTrigger>
@@ -80,8 +77,7 @@ export default function Navbar(): JSX.Element {
                 <div
                   className={
                     "flex w-full flex-row items-center pl-1 pr-1 pr-3 pt-3"
-                  }
-                >
+                  }>
                   <div className="mr-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 text-xl font-semibold">
                     {session.data?.user.username.charAt(0).toUpperCase()}
                   </div>
