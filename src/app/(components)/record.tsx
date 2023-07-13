@@ -6,10 +6,10 @@ import LinkItem from "@/app/(components)/link"
 
 type RecordProps = {
   data: Record & { Link: Link[] }
-  links?: Link[]
+  links: Link[]
 }
 
-export default function RecordPage({ data }: RecordProps) {
+export default function RecordPage({ data, links }: RecordProps) {
   return (
     <div
       className={`flex min-h-full w-full flex-col bg-background`}
@@ -33,7 +33,7 @@ export default function RecordPage({ data }: RecordProps) {
         style={{
           margin: "0 auto",
         }}>
-        {data.Link.map((link: Link) => (
+        {links.map((link: Link) => (
           <LinkItem key={link.id} Link={link} />
         ))}
       </section>
