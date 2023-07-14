@@ -41,7 +41,7 @@ export default function ModifyLinksWrapper({
 }: {
   record1: Record & { Link: Link[] }
 }) {
-  const { links, record, modify } = useStore()
+  const { links, record, add_new_link } = useStore()
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -57,7 +57,7 @@ export default function ModifyLinksWrapper({
 
     if (links !== undefined && links.length > 0) {
       if (res.link) {
-        modify([...links, res?.link])
+        add_new_link(res.link)
       }
     }
     setIsLoading(false)
@@ -108,7 +108,7 @@ export default function ModifyLinksWrapper({
                               className={
                                 "flex w-full flex-row items-center justify-between"
                               }>
-                              <Label htmlFor={"link"}>Enter URL</Label>
+                              <Label htmlFor={"url"}>Enter URL</Label>
                               <Button
                                 disabled={isLoading}
                                 variant="ghost"
@@ -162,19 +162,18 @@ export default function ModifyLinksWrapper({
                 </Form>
               </Card>
             )}
-            {links && links.length > 0
-              ? links.map((link: Link, index: number, array: Link[]) => {
-                  return (
-                    <div className={"max-w-xl min-[320px]:w-[95%]"} key={index}>
-                      <ModifyLinkCard
-                        link={link}
-                        index={index}
-                        max={array.length}
-                      />
-                    </div>
-                  )
-                })
-              : null}
+
+            {links.map((link: Link, index: number, array: Link[]) => {
+              return (
+                <div className={"max-w-xl min-[300px]:w-[95%]"} key={index}>
+                  <ModifyLinkCard
+                    link={link}
+                    index={index}
+                    max={array.length}
+                  />
+                </div>
+              )
+            })}
           </div>
         </div>
 
