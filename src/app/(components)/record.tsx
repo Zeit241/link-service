@@ -33,9 +33,9 @@ export default function RecordPage({ data, links }: RecordProps) {
         style={{
           margin: "0 auto",
         }}>
-        {links.map((link: Link) => (
-          <LinkItem key={link.id} Link={link} />
-        ))}
+        {links.map(
+          (link: Link) => link.enabled && <LinkItem key={link.id} link={link} />
+        )}
       </section>
       <div className={"mb-2 mt-12 flex items-center justify-center"}>
         <h1 className={"items-center justify-center"}>PRETTY LINKS</h1>
