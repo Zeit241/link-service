@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { Link } from "@prisma/client"
 
 import { prisma } from "@/lib/database"
 
@@ -14,7 +14,7 @@ interface CreateLinkProps {
 
 export default async function CreateLink(
   data: CreateLinkProps
-): Promise<{ status: number; message: string }> {
+): Promise<{ status: number; message: string; link?: Link }> {
   try {
     const link = await prisma.link.create({
       data: {
@@ -24,10 +24,7 @@ export default async function CreateLink(
         order: data.order || 0,
       },
     })
-    revalidatePath("/dashboard/modify/" + data.record_name)
-    revalidatePath("/" + data.record_name)
-    console.log(link)
-    return { status: 200, message: "Done!" }
+    return { status: 200, message: "Done!", link: link }
   } catch (e) {
     console.log(e)
     return { status: 500, message: "Internal server error" }
