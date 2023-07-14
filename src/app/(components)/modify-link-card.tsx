@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "@prisma/client"
 import { ChevronDown, ChevronUp, Pencil } from "lucide-react"
+import useOutsideClick from "react-outside-click-hook"
 
-import useOutsideClick from "@/lib/hooks/use-outside-click"
+import { useStore } from "@/lib/storage/storage"
 import { Card } from "@/app/(components)/ui/card"
 import { Input } from "@/app/(components)/ui/input"
 import { Switch } from "@/app/(components)/ui/switch"
@@ -21,6 +22,8 @@ export default function ModifyLinkCard({
   index,
   max,
 }: ModifyLinkCardProps) {
+  const { links, change_links_order } = useStore()
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isEnabled, setIsEnabled] = useState<boolean>(link.enabled)
 
@@ -30,37 +33,57 @@ export default function ModifyLinkCard({
   const [name_value, setNameValue] = useState<string>(link.name)
   const [url_value, setUrlValue] = useState<string>(link.url)
 
-  const name = useRef<any>()
-  const url = useRef<any>()
+  const name = useRef<HTMLInputElement | null>(null)
+  const url = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    name.current.focus()
-    name.current.setSelectionRange(name_value.length, name_value.length)
+    if (name.current) {
+      if (isNameEditing) {
+        name?.current.focus()
+        name?.current?.setSelectionRange(name_value.length, name_value.length)
+      }
+    }
   }, [isNameEditing])
   useEffect(() => {
-    url.current.focus()
-    url.current.setSelectionRange(name_value.length, name_value.length)
-  }, [isUrlEditing])
+    if (url.current) {
+      if (isUrlEditing) {
+        url.current.focus()
+        url.current.setSelectionRange(name_value.length, name_value.length)
+      }
+    }
+  }, [isNameEditing])
 
-  useOutsideClick(name, async () => {
-    setIsLoading(true)
-    setIsNameEditing(false)
-    await UpdateLink(link.id, { name: name_value })
-    setIsLoading(false)
-  })
-  useOutsideClick(url, async () => {
-    setIsUrlEditing(false)
-    await UpdateLink(link.id, { url: url_value })
-    setIsLoading(false)
-  })
+  useOutsideClick(
+    name,
+    async () => {
+      setIsNameEditing(false)
+      setIsLoading(true)
+      await UpdateLink(link.id, { name: name_value })
+      setIsLoading(false)
+    },
+    isNameEditing
+  )
+
+  useOutsideClick(
+    url,
+    async () => {
+      setIsUrlEditing(false)
+      setIsLoading(true)
+      await UpdateLink(link.id, { url: url_value })
+      setIsLoading(false)
+    },
+    isUrlEditing
+  )
   const decrease_link_index = async (): Promise<void> => {
+    change_links_order!(link.id, "up")
     setIsLoading(true)
-    await UpdateLink(link.id, { order: index - 1 })
+    //await UpdateLink(link.id, { order: index - 1 })
     setIsLoading(false)
   }
   const increase_link_index = async (): Promise<void> => {
+    change_links_order!(link.id, "down")
     setIsLoading(true)
-    await UpdateLink(link.id, { order: index + 1 })
+    //await UpdateLink(link.id, { order: index + 1 })
     setIsLoading(false)
   }
   return (
@@ -68,7 +91,12 @@ export default function ModifyLinkCard({
       <Card className={"flex w-full flex-row border p-3"}>
         <div className={"mr-4 flex flex-col gap-0.5"}>
           <ChevronUp
-            className={"cursor-pointer hover:scale-125"}
+            //color={index > 0 ? "text" : "text-muted-foreground"}
+            className={` ${
+              index > 0
+                ? "cursor-pointer hover:scale-125"
+                : "cursor-not-allowed "
+            }`}
             onClick={index > 0 ? decrease_link_index : () => {}}
           />
           <span>#{index}</span>
