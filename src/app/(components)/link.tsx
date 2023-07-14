@@ -4,13 +4,14 @@ import { useRouter } from "next/navigation"
 import { Link } from "@prisma/client"
 
 type LinkItemProps = {
-  Link: Omit<Link, "createdAt" | "updatedAt">
+  //Link: Omit<Link, "createdAt" | "updatedAt">
+  link: Link
 }
-export default function LinkItem({ Link }: LinkItemProps) {
+export default function LinkItem({ link }: LinkItemProps) {
   const router = useRouter()
   const updateLinks = async () => {
     //TODO: Собирать статистику по каждой ссылке
-    return router.push(Link.url, {})
+    return router.push(link.url, {})
   }
 
   return (
@@ -21,7 +22,7 @@ export default function LinkItem({ Link }: LinkItemProps) {
       }>
       <div className={"flex flex-1 items-center justify-center"}>
         <h1 className={"break-all text-center font-semibold sm:text-base"}>
-          {Link.name}
+          {link.name}
         </h1>
       </div>
     </div>
