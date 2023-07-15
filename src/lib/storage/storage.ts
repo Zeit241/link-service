@@ -14,7 +14,10 @@ interface State {
   modify_link_data: (id: string, data: ModifyLinkProps) => void
   add_new_link: (link: Link) => void
   change_links_order?: (id: string, type: "up" | "down") => void
-  modify: (links: Link[]) => void
+  links_order_changed: [
+    { id: string; order: number },
+    { id: string; order: number }
+  ]
 }
 
 export const useStore = create<State>((set, get) => ({
@@ -37,18 +40,30 @@ export const useStore = create<State>((set, get) => ({
   },
   change_links_order: (id, type) => {
     const { links } = get()
-    const l = links.map((link, index, array) => {
+    let link_1
+    const updated_links = links.map((link, index, array) => {
       if (link.id === id) {
         const order = link.order
-        link.order = link.order = type === "down" ? index++ : index--
-        array[index + 1].order = order
+        link.order = type === "down" ? ++link.order! : --link.order!
+        array[type === "down" ? ++index : --index].order = order
+        link_1 = [
+          { id: link.id, order: link.order },
+          {
+            id: array[type === "down" ? ++index : --index].id,
+            order: array[type === "down" ? ++index : --index].order,
+          },
+        ]
       }
       return link
     })
-    l.sort((a: Link, b: Link) => a?.order! - b?.order!)
+    updated_links.sort((a: Link, b: Link) => a?.order! - b?.order!)
     set({
-      links: l,
+      links: updated_links,
+      links_order_changed: link_1,
     })
   },
-  modify: (new_links) => set((state) => ({ links: new_links })),
+  links_order_changed: [{}, {}] as [
+    { id: string; order: number },
+    { id: string; order: number }
+  ],
 }))
