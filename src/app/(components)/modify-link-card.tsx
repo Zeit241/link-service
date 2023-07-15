@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "@prisma/client"
 import { ChevronDown, ChevronUp, Pencil } from "lucide-react"
-import useOutsideClick from "react-outside-click-hook"
 
-import { useStore } from "@/lib/storage/storage"
 import { Card } from "@/app/(components)/ui/card"
 import { Input } from "@/app/(components)/ui/input"
 import { Switch } from "@/app/(components)/ui/switch"
@@ -22,66 +20,57 @@ export default function ModifyLinkCard({
   index,
   max,
 }: ModifyLinkCardProps) {
-  const { links, change_links_order } = useStore()
-
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isEnabled, setIsEnabled] = useState<boolean>(link.enabled)
-
   const [isNameEditing, setIsNameEditing] = useState<boolean>(false)
   const [isUrlEditing, setIsUrlEditing] = useState<boolean>(false)
-
-  const [name_value, setNameValue] = useState<string>(link.name)
-  const [url_value, setUrlValue] = useState<string>(link.url)
-
+  const [nameValue, setNameValue] = useState<string>(link.name)
+  const [urlValue, setUrlValue] = useState<string>(link.url)
   const name = useRef<HTMLInputElement | null>(null)
   const url = useRef<HTMLInputElement | null>(null)
 
+  //Set cursor position at the end of the value
   useEffect(() => {
-    if (name.current) {
-      if (isNameEditing) {
-        name?.current.focus()
-        name?.current?.setSelectionRange(name_value.length, name_value.length)
-      }
+    if (isNameEditing) {
+      name?.current?.focus()
+      name?.current?.setSelectionRange(
+        name?.current?.value.length,
+        name?.current?.value.length
+      )
     }
   }, [isNameEditing])
   useEffect(() => {
-    if (url.current) {
-      if (isUrlEditing) {
-        url.current.focus()
-        url.current.setSelectionRange(name_value.length, name_value.length)
-      }
+    if (isUrlEditing) {
+      url?.current?.focus()
+      url?.current?.setSelectionRange(
+        url.current?.value.length,
+        url.current?.value.length
+      )
     }
-  }, [isNameEditing])
+  }, [isUrlEditing])
 
-  useOutsideClick(
-    name,
-    async () => {
-      setIsNameEditing(false)
-      setIsLoading(true)
-      await UpdateLink(link.id, { name: name_value })
-      setIsLoading(false)
-    },
-    isNameEditing
-  )
+  const updateName = async (): Promise<void> => {
+    setIsNameEditing(false)
+    setIsLoading(true)
+    await UpdateLink(link.id, { name: nameValue })
+    setIsLoading(false)
+  }
 
-  useOutsideClick(
-    url,
-    async () => {
-      setIsUrlEditing(false)
-      setIsLoading(true)
-      await UpdateLink(link.id, { url: url_value })
-      setIsLoading(false)
-    },
-    isUrlEditing
-  )
+  const updateUrl = async (): Promise<void> => {
+    setIsUrlEditing(false)
+    setIsLoading(true)
+    await UpdateLink(link.id, { url: urlValue })
+    setIsLoading(false)
+  }
+
   const decrease_link_index = async (): Promise<void> => {
-    change_links_order!(link.id, "up")
+    //change_links_order!(link.id, "up")
     setIsLoading(true)
     //await UpdateLink(link.id, { order: index - 1 })
     setIsLoading(false)
   }
   const increase_link_index = async (): Promise<void> => {
-    change_links_order!(link.id, "down")
+    //change_links_order!(link.id, "down")
     setIsLoading(true)
     //await UpdateLink(link.id, { order: index + 1 })
     setIsLoading(false)
@@ -91,7 +80,6 @@ export default function ModifyLinkCard({
       <Card className={"flex w-full flex-row border p-3"}>
         <div className={"mr-4 flex flex-col gap-0.5"}>
           <ChevronUp
-            //color={index > 0 ? "text" : "text-muted-foreground"}
             className={` ${
               index > 0
                 ? "cursor-pointer hover:scale-125"
@@ -107,7 +95,7 @@ export default function ModifyLinkCard({
         </div>
         <div
           className={
-            "flex w-full  flex-row items-center justify-between pl-1 pr-3"
+            "flex w-full  flex-row items-center justify-between gap-6 pl-1 pr-3"
           }>
           <div className={"flex w-full flex-col overflow-x-hidden"}>
             <div className={"flex flex-row items-center justify-between "}>
@@ -115,7 +103,7 @@ export default function ModifyLinkCard({
                 {!isNameEditing && (
                   <>
                     <span className={"text-ellipsis text-lg font-semibold"}>
-                      {name_value}
+                      {nameValue}
                     </span>
                     <Pencil
                       size={14}
@@ -128,11 +116,12 @@ export default function ModifyLinkCard({
                 )}
               </div>
               <Input
-                className={`input_without_border h-fit rounded-none border-0 p-0 text-base text-lg font-semibold ${
+                className={`input_without_border h-fit rounded-none border-0 border-b border-muted p-0 text-base text-lg font-semibold ${
                   isNameEditing ? "" : "hidden"
                 }`}
                 spellCheck={false}
-                defaultValue={name_value}
+                defaultValue={nameValue}
+                onBlur={updateName}
                 onChange={(e) => setNameValue(e.target.value)}
                 ref={name}
               />
@@ -148,7 +137,7 @@ export default function ModifyLinkCard({
                       className={
                         "w-full overflow-hidden text-ellipsis whitespace-nowrap text-base text-muted-foreground"
                       }>
-                      {link.url}
+                      {urlValue}
                     </span>
                     <Pencil
                       size={18}
@@ -161,11 +150,12 @@ export default function ModifyLinkCard({
                 )}
               </div>
               <Input
-                className={`input_without_border h-fit rounded-none border-0 p-0 text-base text-muted-foreground ${
+                className={`input_without_border h-fit rounded-none border-0  border-b border-muted p-0 text-base text-muted-foreground ${
                   isUrlEditing ? "" : "hidden"
                 }`}
                 spellCheck={false}
-                defaultValue={url_value}
+                defaultValue={urlValue}
+                onBlur={updateUrl}
                 onChange={(e) => setUrlValue(e.target.value)}
                 ref={url}
               />
