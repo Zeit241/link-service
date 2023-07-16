@@ -6,6 +6,7 @@ import { Record } from "@prisma/client"
 import { AlertDialog, AlertDialogTrigger } from "@radix-ui/react-alert-dialog"
 import { Trash } from "lucide-react"
 
+import AbsoluteLoader from "@/app/(components)/ui/absolute-loader"
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -27,17 +28,29 @@ type unionRecordType = Record & { Link: { id: string }[] } & {
 }
 export default function RecordCard({ record }: { record: unionRecordType }) {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [recordEnabled, setRecordEnabled] = useState<boolean>(record.enabled)
-  const navigateToPage = (event: React.MouseEvent) => {
+
+  const updateEnabledState = async (): Promise<void> => {
+    setIsLoading(true)
+    await UpdateRecord(record.id, { enabled: !recordEnabled }).then(() => {
+      setRecordEnabled(!recordEnabled)
+      setIsLoading(false)
+    })
+  }
+
+  const navigateToPage = () => {
     return router.push(`dashboard/modify/${record.url}`)
   }
 
   return (
     <>
-      <Card className={"flex min-h-[175px] flex-col p-5 hover:bg-muted"}>
+      <Card
+        className={"relative flex min-h-[175px] flex-col p-5 hover:bg-muted"}>
+        {isLoading && <AbsoluteLoader />}
         <div
           className={"flex w-full cursor-pointer flex-col"}
-          onClick={(e) => navigateToPage(e)}>
+          onClick={navigateToPage}>
           <div className={"mb-1 flex flex-row items-center justify-between"}>
             <h1 className={"flex flex-wrap text-2xl font-bold uppercase"}>
               {record.name}
@@ -66,14 +79,11 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
             </div>
           </>
         </div>
-        <div className={"mt-2 flex flex-row items-center justify-between"}>
+        <div className={"mt-4 flex flex-row items-center justify-between"}>
           <Switch
             id="record-enabled"
             checked={recordEnabled}
-            onCheckedChange={async () => {
-              await UpdateRecord(record.id, { enabled: !recordEnabled })
-              setRecordEnabled(!recordEnabled)
-            }}
+            onCheckedChange={updateEnabledState}
           />
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -92,7 +102,10 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={async () => await deleteRecord(record.id)}>
+                  onClick={async () => {
+                    setIsLoading(true)
+                    await deleteRecord(record.id)
+                  }}>
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>
