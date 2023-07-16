@@ -22,12 +22,10 @@ export default async function RecordsPage({
 }) {
   const data = await GetRecordLinks(params.slug)
 
-  if (!data) {
-    return notFound()
-  }
-
-  return (
-    <div className={"overflow-x-hidden"}>
+  return !data || data?.Link.length < 1 || !data?.enabled ? (
+    notFound()
+  ) : (
+    <div className={"h-full overflow-x-hidden"}>
       <Suspense fallback={<div>Loading...</div>}>
         <RecordPage data={data} links={data.Link} />
       </Suspense>
