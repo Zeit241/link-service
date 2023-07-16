@@ -12,7 +12,7 @@ type RecordProps = {
 export default function RecordPage({ data, links }: RecordProps) {
   return (
     <div
-      className={`flex min-h-full w-full flex-col bg-background`}
+      className={`flex h-full min-h-full w-full flex-col bg-background`}
       //style={{ backgroundColor: data.preferences.backgroundColor }}
     >
       <nav className={"flex flex-col items-center p-8"}>
@@ -28,7 +28,7 @@ export default function RecordPage({ data, links }: RecordProps) {
       </nav>
       <section
         className={
-          "m-0 flex h-full w-full flex-1 flex-col items-center justify-start gap-4"
+          "m-0 flex h-full w-full flex-1 flex-col flex-wrap content-center items-center justify-start gap-4"
         }
         style={{
           margin: "0 auto",
