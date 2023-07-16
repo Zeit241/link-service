@@ -8,6 +8,7 @@ import { Loader2, Plus } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { isWordNotAllowed } from "@/lib/utils"
 import { Button } from "@/app/(components)/ui/button"
 import { Card } from "@/app/(components)/ui/card"
 import {
@@ -30,6 +31,7 @@ import { Input } from "@/app/(components)/ui/input"
 import CreateRecord from "@/app/server/create-record"
 import VerifyRecordName from "@/app/server/verify-record-name"
 
+//TODO: Fix regex, it's not really working
 const createRecordSchema = z.object({
   name: z
     .string()
@@ -39,7 +41,7 @@ const createRecordSchema = z.object({
     .max(20, {
       message: "Name must be less than 20 characters",
     })
-    .regex(/[A-Za-z0-9-._~:/?#\[\]@!$&'()*+,;%=]+/g, {
+    .regex(/[A-Za-z0-9-/\\._~:?#\[\]@!$&'()*+,;%=`]/g, {
       message: "Invalid characters.",
     }),
 })
@@ -65,17 +67,21 @@ export default function CreateCardBtn({ id }: { id: string }) {
     }
   }, [name])
 
-  async function verifyName(name: string): Promise<boolean> {
-    const is_name_taken = await VerifyRecordName({ name })
-    if (is_name_taken.status === 403) {
-      setNameError(true)
-      form.setError("name", { message: "Name already taken" })
+  async function verifyName(name: string): Promise<void> {
+    console.log(isWordNotAllowed(name))
+    if (!isWordNotAllowed(name)) {
+      const is_name_taken = await VerifyRecordName({ name })
+      if (is_name_taken.status === 403) {
+        setNameError(true)
+        form.setError("name", { message: "Name already taken" })
+      } else {
+        setNameError(false)
+        setIsNameChecked(true)
+      }
     } else {
-      setNameError(false)
-      setIsNameChecked(true)
+      setNameError(true)
+      form.setError("name", { message: "Name is not allowed" })
     }
-
-    return true
   }
 
   async function onSubmit() {
