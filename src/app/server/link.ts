@@ -4,14 +4,14 @@ import { Link, Prisma } from "@prisma/client"
 
 import { prisma } from "@/lib/database"
 
-import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
+import { BaseReturnType } from "../../../types/custom-types"
 
-type ReturnLinkType = { status: number; message: string }
+import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
 
 type CreateLinkProps = Pick<Link, "recordId" | "name" | "url" | "order">
 export const CreateLink = async (
   data: CreateLinkProps
-): Promise<ReturnLinkType & { link?: Link }> => {
+): Promise<BaseReturnType & { link?: Link }> => {
   try {
     const CreatedLink = await prisma.link.create({
       data,
@@ -41,7 +41,7 @@ type UpdateLinkProps = Pick<Link, "id"> &
 export const UpdateLink = async ({
   id,
   ...data
-}: UpdateLinkProps): Promise<ReturnLinkType> => {
+}: UpdateLinkProps): Promise<BaseReturnType> => {
   try {
     await prisma.link.update({
       where: {
@@ -68,7 +68,7 @@ type DeleteLinkProps = Pick<Link, "id">
 
 export const DeleteLink = async ({
   id,
-}: DeleteLinkProps): Promise<ReturnLinkType> => {
+}: DeleteLinkProps): Promise<BaseReturnType> => {
   try {
     await prisma.link.delete({
       where: {
