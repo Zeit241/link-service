@@ -15,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/app/(components)/ui/dropdown-menu"
-import { Skeleton } from "@/app/(components)/ui/skeleton"
 
 const nav_menu = [
   { path: "dashboard", name: "Links" },
@@ -26,19 +25,16 @@ const nav_menu = [
 export default function Navbar(): JSX.Element {
   const pathname = usePathname()
   const session = useSession()
-  if (session) {
-    return (
-      <div
-        className={
-          "flex h-14 w-full flex-row items-center border-b border-border bg-background pl-4 pr-8"
-        }>
-        <div className="logo">
-          <Webhook
-            width={35}
-            height={35}
-            className={"mr-4 hover:animate-spin"}
-          />
-        </div>
+  console.log(session)
+  return (
+    <div
+      className={`flex h-14 w-full flex-row items-center border-b border-border bg-background pl-4 pr-8 ${
+        !session.data && "justify-between"
+      }`}>
+      <div className="logo">
+        <Webhook width={35} height={35} className={"mr-4 hover:animate-spin"} />
+      </div>
+      {session.data && (
         <nav className="list flex flex-1 flex-row gap-3 xs:gap-2 sm:gap-4">
           {nav_menu.map((e: { path: string; name: string }) => {
             const is_current_page = pathname.startsWith(`/${e.path}`)
@@ -54,13 +50,18 @@ export default function Navbar(): JSX.Element {
             )
           })}
         </nav>
-        <div className="announcements"></div>
+      )}
+
+      <div className="announcements"></div>
+      {session.data && (
         <div className="share-btn hidden md:flex lg:flex xl:flex ">
           <Button size={"sm"}>
             <ShareIcon className={"mr-2 "} />
             Share
           </Button>
         </div>
+      )}
+      {session.data ? (
         <div className="user-info ml-5 text-white">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -76,7 +77,7 @@ export default function Navbar(): JSX.Element {
               <DropdownMenuGroup>
                 <div
                   className={
-                    "flex w-full flex-row items-center pl-1 pr-1 pr-3 pt-3"
+                    "flex w-full flex-row items-center pl-1  pr-3 pt-3"
                   }>
                   <div className="mr-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 text-xl font-semibold">
                     {session.data?.user.username.charAt(0).toUpperCase()}
@@ -106,9 +107,13 @@ export default function Navbar(): JSX.Element {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
-    )
-  } else {
-    return <Skeleton className={"h-14 w-full"}></Skeleton>
-  }
+      ) : (
+        <div className={"flex items-end justify-end"}>
+          <Button className={"flex gap-2.5"} asChild>
+            <Link href={"/login"}>Sign in</Link>
+          </Button>
+        </div>
+      )}
+    </div>
+  )
 }
