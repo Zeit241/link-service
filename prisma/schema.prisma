@@ -60,6 +60,7 @@ model Record {
   url            String      @unique
   name           String
   enabled        Boolean     @default(true)
+  adult          Boolean     @default(false)
   description    String?
   profilePicture String
   preferences    Prefences
@@ -69,13 +70,14 @@ model Record {
   updatedAt      DateTime    @updatedAt
   Link           Link[]
   Statistic      Statistic[]
+  Warns          Warns[]
 }
 
 model Link {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   record      Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
   recordId    String       @db.ObjectId
-  order       Int?         @default(0)
+  order       Int          @default(0)
   url         String
   name        String
   enabled     Boolean      @default(true)
@@ -87,16 +89,27 @@ model Link {
 }
 
 model Statistic {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
   ip        String?
   country   String?
   from      String
   time      Int
-  to        Link     @relation(fields: [toId], references: [id], onDelete: Cascade)
-  toId      String   @db.ObjectId
+  shared    ShareLink?
+  to        Link       @relation(fields: [toId], references: [id], onDelete: Cascade)
+  toId      String     @db.ObjectId
+  createdAt DateTime   @default(now()) @db.Date
+  link      Record     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  linkId    String     @db.ObjectId
+}
+
+model Warns {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  checked   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
   createdAt DateTime @default(now()) @db.Date
-  link      Record   @relation(fields: [linkId], references: [id], onDelete: Cascade)
-  linkId    String   @db.ObjectId
+  record    Record   @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  recordId  String   @db.ObjectId
 }
 
 enum Role {
@@ -118,4 +131,16 @@ type Prefences {
 type CustomImage {
   enabled Boolean
   image   String?
+}
+
+type ShareLink {
+  shared   Boolean @default(false)
+  sharedTo ShareTo
+}
+
+enum ShareTo {
+  EMAIL
+  FACEBOOK
+  TWITTER
+  OTHER
 }
