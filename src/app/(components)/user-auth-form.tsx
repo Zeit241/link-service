@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
-import SingUp from "@/app/server/sign-up"
+import { SingUp } from "@/app/server/auth"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   type: "signin" | "signup"

@@ -28,8 +28,7 @@ import {
   FormLabel,
 } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
-import CreateRecord from "@/app/server/create-record"
-import VerifyRecordName from "@/app/server/verify-record-name"
+import { CreateRecord, VerifyRecordName } from "@/app/server/record"
 
 //TODO: Fix regex, it's not really working
 const createRecordSchema = z.object({
@@ -70,7 +69,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
   async function verifyName(name: string): Promise<void> {
     console.log(isWordNotAllowed(name))
     if (!isWordNotAllowed(name)) {
-      const is_name_taken = await VerifyRecordName({ name })
+      const is_name_taken = await VerifyRecordName({ url: name })
       if (is_name_taken.status === 403) {
         setNameError(true)
         form.setError("name", { message: "Name already taken" })

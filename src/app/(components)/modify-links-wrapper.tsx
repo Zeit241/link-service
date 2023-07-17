@@ -17,7 +17,7 @@ import { Card } from "@/app/(components)/ui/card"
 import { Form, FormField, FormItem } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
 import { Label } from "@/app/(components)/ui/label"
-import CreateLink from "@/app/server/create-link"
+import { CreateLink } from "@/app/server/link"
 
 const createNewLink = z.object({
   url: z.string().refine(
@@ -50,8 +50,7 @@ export default function ModifyLinksWrapper({
     const res = await CreateLink({
       url: value.url,
       name: value.url,
-      record_id: record.id,
-      record_name: record?.name,
+      recordId: record.id,
       order: record?.Link?.length,
     })
 

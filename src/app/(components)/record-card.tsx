@@ -20,8 +20,7 @@ import { Badge } from "@/app/(components)/ui/badge"
 import { Card } from "@/app/(components)/ui/card"
 import { Separator } from "@/app/(components)/ui/separator"
 import { Switch } from "@/app/(components)/ui/switch"
-import { deleteRecord } from "@/app/server/delete-record"
-import UpdateRecord from "@/app/server/update-record"
+import { DeleteRecord, UpdateRecord } from "@/app/server/record"
 
 type unionRecordType = Record & { Link: { id: string }[] } & {
   Statistic: { id: string }[]
@@ -33,7 +32,7 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
 
   const updateEnabledState = async (): Promise<void> => {
     setIsLoading(true)
-    await UpdateRecord(record.id, { enabled: !recordEnabled }).then(() => {
+    await UpdateRecord({ id: record.id, enabled: !recordEnabled }).then(() => {
       setRecordEnabled(!recordEnabled)
       setIsLoading(false)
     })
@@ -104,7 +103,7 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
                 <AlertDialogAction
                   onClick={async () => {
                     setIsLoading(true)
-                    await deleteRecord(record.id)
+                    await DeleteRecord({ id: record.id })
                   }}>
                   Continue
                 </AlertDialogAction>

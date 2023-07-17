@@ -3,7 +3,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import RecordPage from "@/app/(components)/record"
-import { GetRecordLinks } from "@/app/server/get-record-links"
+import { GetRecordLinks } from "@/app/server/record"
 
 export async function generateMetadata({
   params,
@@ -20,7 +20,7 @@ export default async function RecordsPage({
 }: {
   params: { slug: string }
 }) {
-  const data = await GetRecordLinks(params.slug)
+  const data = await GetRecordLinks({ url: params.slug })
 
   return !data || data?.Link.length < 1 || !data?.enabled ? (
     notFound()

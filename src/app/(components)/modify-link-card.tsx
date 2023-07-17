@@ -7,7 +7,7 @@ import { ChevronDown, ChevronUp, Pencil } from "lucide-react"
 import { Card } from "@/app/(components)/ui/card"
 import { Input } from "@/app/(components)/ui/input"
 import { Switch } from "@/app/(components)/ui/switch"
-import UpdateLink from "@/app/server/update-link"
+import { UpdateLink } from "@/app/server/link"
 
 type ModifyLinkCardProps = {
   link: Link
@@ -52,14 +52,14 @@ export default function ModifyLinkCard({
   const updateName = async (): Promise<void> => {
     setIsNameEditing(false)
     setIsLoading(true)
-    await UpdateLink(link.id, { name: nameValue })
+    await UpdateLink({ id: link.id, name: nameValue })
     setIsLoading(false)
   }
 
   const updateUrl = async (): Promise<void> => {
     setIsUrlEditing(false)
     setIsLoading(true)
-    await UpdateLink(link.id, { url: urlValue })
+    await UpdateLink({ id: link.id, url: urlValue })
     setIsLoading(false)
   }
 
@@ -167,7 +167,7 @@ export default function ModifyLinkCard({
               onCheckedChange={async () => {
                 setIsLoading(true)
                 setIsEnabled(!isEnabled)
-                await UpdateLink(link.id, { enabled: !link.enabled })
+                await UpdateLink({ id: link.id, enabled: !link.enabled })
                 setIsLoading(false)
               }}
             />
