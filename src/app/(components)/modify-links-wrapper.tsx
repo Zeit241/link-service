@@ -17,7 +17,7 @@ import { Card } from "@/app/(components)/ui/card"
 import { Form, FormField, FormItem } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
 import { Label } from "@/app/(components)/ui/label"
-import { CreateLink } from "@/app/server/link"
+import { CreateLink } from "@/app/actions/link"
 
 const createNewLink = z.object({
   url: z.string().refine(

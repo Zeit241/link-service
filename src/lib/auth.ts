@@ -3,7 +3,7 @@ import { NextAuthOptions } from "next-auth"
 import CredentialProvider from "next-auth/providers/credentials"
 
 import { prisma } from "@/lib/database"
-import { SignIn } from "@/app/server/auth"
+import { SignIn } from "@/app/actions/auth"
 
 import { UserSession } from "../../types/custom-types"
 

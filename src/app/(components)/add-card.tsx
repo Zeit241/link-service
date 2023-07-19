@@ -28,7 +28,7 @@ import {
   FormLabel,
 } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
-import { CreateRecord, VerifyRecordName } from "@/app/server/record"
+import { CreateRecord, VerifyRecordName } from "@/app/actions/record"
 
 //TODO: Fix regex, it's not really working
 const createRecordSchema = z.object({

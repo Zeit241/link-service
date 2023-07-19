@@ -7,7 +7,7 @@ import { ChevronDown, ChevronUp, Pencil } from "lucide-react"
 import { Card } from "@/app/(components)/ui/card"
 import { Input } from "@/app/(components)/ui/input"
 import { Switch } from "@/app/(components)/ui/switch"
-import { UpdateLink } from "@/app/server/link"
+import { UpdateLink } from "@/app/actions/link"
 
 type ModifyLinkCardProps = {
   link: Link

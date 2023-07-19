@@ -20,7 +20,7 @@ import { Badge } from "@/app/(components)/ui/badge"
 import { Card } from "@/app/(components)/ui/card"
 import { Separator } from "@/app/(components)/ui/separator"
 import { Switch } from "@/app/(components)/ui/switch"
-import { DeleteRecord, UpdateRecord } from "@/app/server/record"
+import { DeleteRecord, UpdateRecord } from "@/app/actions/record"
 
 type unionRecordType = Record & { Link: { id: string }[] } & {
   Statistic: { id: string }[]

@@ -3,7 +3,8 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import RecordPage from "@/app/(components)/record"
-import { GetRecordLinks } from "@/app/server/record"
+import Loading from "@/app/[slug]/loading"
+import { GetRecordLinks } from "@/app/actions/record"
 
 export async function generateMetadata({
   params,
@@ -20,13 +21,12 @@ export default async function RecordsPage({
 }: {
   params: { slug: string }
 }) {
-  const data = await GetRecordLinks({ url: params.slug })
-
+  const data = await GetRecordLinks({ url: params.slug, enabled: true })
   return !data || data?.Link.length < 1 || !data?.enabled ? (
     notFound()
   ) : (
     <div className={"h-full overflow-x-hidden"}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <RecordPage data={data} links={data.Link} />
       </Suspense>
     </div>
