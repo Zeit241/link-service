@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Link as LinkType, Record as RecordType } from "@prisma/client"
 import {
   ChevronRight,
@@ -25,13 +25,20 @@ import {
   DialogTrigger,
 } from "@/app/(components)/ui/dialog"
 
-type RecordProps = {
+type RecordPageProps = {
   data: RecordType & { Link: LinkType[] }
   links: LinkType[]
 }
 
-export default function RecordPage({ data, links }: RecordProps) {
+//TODO: Disable modal while component open in dashboard
+//TODO: Add useCopyClick hook
+export default function RecordPage({
+  data,
+  links = data.Link,
+}: RecordPageProps) {
   const router = useRouter()
+  const pathname = usePathname()
+  const [isIframe, setIsIframe] = useState<boolean>(false)
   const [copy, setCopy] = useState<boolean>(false)
   const [fullUrl, setFullUrl] = useState<string>("")
 
@@ -65,8 +72,12 @@ export default function RecordPage({ data, links }: RecordProps) {
   }, [copy])
 
   useEffect(() => {
+    if (pathname.startsWith("/dashboard")) {
+      console.log(true)
+      setIsIframe(true)
+    }
     setFullUrl(window?.location?.href)
-  }, [])
+  }, [pathname])
 
   return (
     <div
@@ -78,16 +89,17 @@ export default function RecordPage({ data, links }: RecordProps) {
           "flex h-20 w-[78%] min-w-[260px] max-w-[620px] flex-row  justify-end "
         }>
         <div className={"flex flex-row  items-center"}>
-          <Dialog modal={true}>
+          <Dialog>
             <DialogTrigger asChild>
               <Button
+                disabled={isIframe}
                 className={"rounded-full bg-muted-foreground p-2"}
                 size={"icon"}
                 asChild>
                 <MoreHorizontal size={18} />
               </Button>
             </DialogTrigger>
-            <DialogContent className={"w-full pl-2 pr-2"}>
+            <DialogContent className={`w-full pl-2 pr-2`}>
               <DialogHeader
                 className={"flex max-w-full items-center gap-2 p-0 "}>
                 <DialogTitle className={"mb-8"}>Share this link</DialogTitle>
@@ -212,10 +224,9 @@ export default function RecordPage({ data, links }: RecordProps) {
         className={
           "m-0 flex h-full w-full flex-1 flex-col flex-wrap content-center items-center justify-start gap-4"
         }>
-        {links.map(
-          (link: LinkType) =>
-            link.enabled && <LinkItem key={link.id} link={link} />
-        )}
+        {links.map((link: LinkType) => (
+          <LinkItem key={link.id} link={link} />
+        ))}
       </section>
       <div className={"mb-2 mt-12 flex items-center justify-center"}>
         <h1 className={"items-center justify-center"}>PRETTY LINKS</h1>
