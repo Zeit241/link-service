@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
-import { SingUp } from "@/app/server/auth"
+import { SingUp } from "@/app/actions/auth"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   type: "signin" | "signup"
@@ -158,7 +158,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                       </FormControl>
                       <Button
                         className={
-                          "rounded-l-none border-l-0 bg-transparent hover:bg-transparent"
+                          "h-10 rounded-l-none border-l-0 bg-transparent hover:bg-transparent"
                         }
                         type="button"
                         variant="outline"
