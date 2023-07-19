@@ -62,7 +62,7 @@ model Record {
   enabled        Boolean     @default(true)
   adult          Boolean     @default(false)
   description    String?
-  profilePicture String
+  profilePicture String      @default("")
   preferences    Prefences
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String      @db.ObjectId
@@ -93,13 +93,13 @@ model Statistic {
   ip        String?
   country   String?
   from      String
-  time      Int
   shared    ShareLink?
-  to        Link       @relation(fields: [toId], references: [id], onDelete: Cascade)
-  toId      String     @db.ObjectId
-  createdAt DateTime   @default(now()) @db.Date
-  link      Record     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  platform  String
+  link      Link       @relation(fields: [linkId], references: [id], onDelete: Cascade)
   linkId    String     @db.ObjectId
+  createdAt DateTime   @default(now()) @db.Date
+  record    Record     @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  recordId  String     @db.ObjectId
 }
 
 model Warns {
