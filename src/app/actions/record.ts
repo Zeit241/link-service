@@ -6,7 +6,7 @@ import { Link, Prisma, Record } from "@prisma/client"
 
 import { prisma } from "@/lib/database"
 
-import { BaseReturnType } from "../../../types/custom-types"
+import { BaseReturnType, Prettify } from "../../../types/custom-types"
 
 import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
 
@@ -128,17 +128,24 @@ export const VerifyRecordName = async ({
   }
 }
 
-type GetRecordLinksProps = Pick<Record, "url">
+type GetRecordLinksProps = Pick<Record, "url"> & Pick<Record, "enabled">
 type GetRecordLinksResult = (Record & { Link: Link[] }) | null
 
 export const GetRecordLinks = cache(
-  async ({ url }: GetRecordLinksProps): Promise<GetRecordLinksResult> => {
+  async ({
+    url,
+    enabled,
+  }: Prettify<GetRecordLinksProps>): Promise<GetRecordLinksResult> => {
     const record = await prisma.record.findUnique({
       where: {
         url,
+        //enabled: !enabled,
       },
       include: {
         Link: {
+          // where: {
+          //   enabled && enabled,
+          // },
           orderBy: {
             order: "asc",
           },
