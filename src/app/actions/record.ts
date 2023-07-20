@@ -155,3 +155,32 @@ export const GetRecordLinks = cache(
     return record ? record : null
   }
 )
+
+type GetRecordCountProps = Pick<Record, "id">
+export const GetRecordCount = async ({
+  id,
+}: GetRecordCountProps): Promise<BaseReturnType & { record?: number }> => {
+  try {
+    const record = await prisma.record.count({
+      where: {
+        id,
+      },
+    })
+    return {
+      status: 200,
+      message: "Record fetched successfully.",
+      record: record,
+    }
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      return {
+        status: 500,
+        message: "An error occurred during the fetch operation.",
+      }
+    }
+    return {
+      status: 500,
+      message: "An unknown error occurred.",
+    }
+  }
+}
