@@ -110,3 +110,8 @@ body {
     background-color: hsl(240 5% 64.9%);
     outline: 1px solid var(--foreground);
 }
+
+main {
+    height: 100%;
+    width: 100%;
+}
