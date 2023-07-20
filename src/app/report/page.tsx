@@ -1,10 +1,11 @@
 "use client"
 
-import { notFound } from "next/navigation"
+import { notFound, useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { useToast } from "@/lib/hooks/use-toast"
 import SessionProviderWrapper from "@/app/(components)/session-provider"
 import { Button } from "@/app/(components)/ui/button"
 import {
@@ -26,14 +27,21 @@ import {
 } from "@/app/(components)/ui/select"
 import { SendReport } from "@/app/actions/report"
 
-//TODO: fix width for form
+//TODO: ADD CHECK FOR LINK EXISTS
 export default function Report({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+  // const [data, setData] = useState<{
+  //
+  // }>()
+  // useEffect(()=>{
+  //   fetch("")
+  // }, [])
   const { id } = searchParams
-
+  const { toast } = useToast()
+  const router = useRouter()
   const formSchema = z.object({
     message: z.string().min(2, {
       message: "Username must be at least 2 characters.",
@@ -43,7 +51,7 @@ export default function Report({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      message: "",
+      message: "Select a reason to report",
     },
   })
 
@@ -51,9 +59,15 @@ export default function Report({
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     await SendReport({ recordId: id as string, text: data.message })
+      .then(() =>
+        toast({
+          title: "Report send successfully",
+          description: "Thanks for your",
+        })
+      )
+      .then(() => router.replace("/"))
   }
 
-  console.log(searchParams)
   return (
     <>
       <SessionProviderWrapper>
@@ -62,11 +76,11 @@ export default function Report({
       <div className={"flex h-full w-full flex-col items-center justify-start"}>
         <h1
           className={
-            "mt-10 items-center justify-center text-center text-4xl font-bold"
+            "mt-10  items-center justify-center overflow-hidden text-ellipsis break-all text-center text-4xl font-bold tracking-wider"
           }>
-          Report for #{id}
+          Report for <p>#{id}</p>
         </h1>
-        <p className={"w-3/5 p-5 text-center"}>
+        <p className={"w-full p-5 text-center sm:w-3/5"}>
           We understand that you are having problems with the content on our
           website. We take such situations very seriously and appreciate your
           appeal. Please fill out the form below to describe in detail the
@@ -76,16 +90,14 @@ export default function Report({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-2/5 space-y-6">
+            className="flex w-5/6 flex-col  justify-end space-y-6 sm:w-3/5">
             <FormField
               control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}>
+                  <FormLabel>Reason for complaint</FormLabel>
+                  <Select onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a reason to report" />
@@ -101,9 +113,7 @@ export default function Report({
                       <SelectItem value="harmful">
                         Malicious or harmful content
                       </SelectItem>
-                      <SelectItem value="harmful">
-                        Malicious or harmful content
-                      </SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription></FormDescription>
@@ -111,7 +121,9 @@ export default function Report({
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit" className={"w-24"}>
+              Submit
+            </Button>
           </form>
         </Form>
       </div>
