@@ -93,9 +93,11 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will{" "}
-                  <span className={"text-red-700"}>delete your</span>{" "}
-                  {record.url}
-                  project and remove your data from our servers.
+                  <span className={"text-red-700"}>
+                    permanently delete your
+                  </span>{" "}
+                  {record.url.toUpperCase() + " "} project and remove your data
+                  (inc. links, stats, etc.) from our servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
