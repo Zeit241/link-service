@@ -30,7 +30,6 @@ import {
 import { Input } from "@/app/(components)/ui/input"
 import { CreateRecord, VerifyRecordName } from "@/app/actions/record"
 
-//TODO: Fix regex, it's not really working
 const createRecordSchema = z.object({
   name: z
     .string()
@@ -40,7 +39,7 @@ const createRecordSchema = z.object({
     .max(20, {
       message: "Name must be less than 20 characters",
     })
-    .regex(/[A-Za-z0-9-/\\._~:?#\[\]@!$&'()*+,;%=`]/g, {
+    .regex(/^[a-zA-Z0-9\-._#[\]@!$=]*$/g, {
       message: "Invalid characters.",
     }),
 })
