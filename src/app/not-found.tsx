@@ -4,7 +4,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Undo2 } from "lucide-react"
 
+import SessionProviderWrapper from "@/app/(components)/session-provider"
 import { Button } from "@/app/(components)/ui/button"
+import Navbar from "@/app/(components)/ui/navbar"
 
 export default function NotFound() {
   const router = useRouter()
@@ -20,6 +22,9 @@ export default function NotFound() {
         https://github.com/vercel/next.js/pull/47328#issuecomment-1488891093
       */}
       <title>Not Found</title>
+      <SessionProviderWrapper>
+        <Navbar />
+      </SessionProviderWrapper>
       <div
         className={"flex h-full w-full flex-col items-center justify-center"}>
         <h1 className={"p-12 text-9xl"}>404</h1>
