@@ -28,7 +28,7 @@ export default function NotFound() {
           Go back
         </Button>
         <h2 className={"text-xl"}>
-          The page you’re looking for doesn’t exist.
+          The page you’re looking for does not exist.
         </h2>
         <p>
           <span className={"p-2"}>Want to take it url?</span>
