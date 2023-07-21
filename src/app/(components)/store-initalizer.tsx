@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 
-import { useStore } from "@/lib/storage/storage"
+import { useStore } from "@/lib/store/store"
 
 function StoreInitializer(data: any) {
   const initialized = useRef(false)
