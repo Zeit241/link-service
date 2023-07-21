@@ -1,19 +1,15 @@
 "use client"
 
-//import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Link } from "@prisma/client"
 
 type LinkItemProps = { link: Link }
 
 export default function LinkItem({ link }: LinkItemProps): JSX.Element {
-  // const [isHovered, setIsHovered] = useState<boolean>(false)
-  //const [isIframe, setIsIframe] = useState<boolean>(false)
-  //const pathname = usePathname()
   const router = useRouter()
 
   const redirect = (): void => {
-    router.replace(link.url)
+    router.replace("https://" + link.url)
   }
 
   const sendStatistic = async (): Promise<void> => {
@@ -30,19 +26,12 @@ export default function LinkItem({ link }: LinkItemProps): JSX.Element {
     }).then(() => redirect())
   }
 
-  // useEffect(() => {
-  //   setIsIframe(pathname.startsWith("/dashboard"))
-  // }, [pathname])
-
   return (
     <div
       onClick={sendStatistic}
       className={
         "flex h-auto w-[75%] min-w-[260px] max-w-[560px]  cursor-pointer content-center bg-muted p-2.5 pl-5 pr-5 transition-all duration-150 hover:scale-105"
-      }
-      // onMouseEnter={() => setIsHovered(true)}
-      // onMouseLeave={() => setIsHovered(false)}
-    >
+      }>
       <div className={"flex w-full content-center items-center justify-center"}>
         <div className={"flex w-full flex-col flex-wrap items-center"}>
           {link.customImage?.enabled && (
@@ -56,26 +45,6 @@ export default function LinkItem({ link }: LinkItemProps): JSX.Element {
             {link.name}
           </h1>
         </div>
-        {/*<div className={`h-[36px] w-[36px]`}>*/}
-        {/*  <div className={isHovered ? "" : "hidden"}>*/}
-        {/*    <Dialog modal={true}>*/}
-        {/*      <DialogTrigger asChild>*/}
-        {/*        <Button*/}
-        {/*          disabled={isIframe}*/}
-        {/*          variant={"ghost"}*/}
-        {/*          size={"icon"}*/}
-        {/*          className={"rounded-full hover:bg-muted-foreground"}>*/}
-        {/*          <MoreHorizontal size={16} />*/}
-        {/*        </Button>*/}
-        {/*      </DialogTrigger>*/}
-        {/*      <DialogContent>*/}
-        {/*        <DialogHeader className={"flex items-center"}>*/}
-        {/*          <DialogTitle>Share this link</DialogTitle>*/}
-        {/*        </DialogHeader>*/}
-        {/*      </DialogContent>*/}
-        {/*    </Dialog>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
       </div>
     </div>
   )
