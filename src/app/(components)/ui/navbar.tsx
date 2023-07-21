@@ -96,14 +96,17 @@ export default function Navbar(): JSX.Element {
           </Link>
         )}
       </nav>
-
+      {/*TODO: add a way to add here current editing link (new store?) or move it to new panel*/}
       <div className="announcements"></div>
-      <div className="share-btn hidden md:flex lg:flex xl:flex ">
-        <Button size={"sm"}>
-          <ShareIcon className={"mr-2 "} />
-          Share
-        </Button>
-      </div>
+      {pathname.includes("/modify/") && (
+        <div className="share-btn hidden md:flex lg:flex xl:flex ">
+          <Button size={"sm"}>
+            <ShareIcon className={"mr-2 "} />
+            Share
+          </Button>
+        </div>
+      )}
+
       <div className="user-info ml-5 text-white">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
