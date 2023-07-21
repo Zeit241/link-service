@@ -3,13 +3,14 @@
 import * as punycode from "punycode"
 import * as React from "react"
 import { useState } from "react"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link, Record } from "@prisma/client"
+import { Link } from "@prisma/client"
 import { Loader2, Plus, X } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { useStore } from "@/lib/storage/storage"
+import { useStore } from "@/lib/store/store"
 import ModifyLinkCard from "@/app/(components)/modify-link-card"
 import RecordPage from "@/app/(components)/record"
 import { Button } from "@/app/(components)/ui/button"
@@ -36,14 +37,11 @@ const createNewLink = z.object({
     { message: "Invalid URL" }
   ),
 })
-export default function ModifyLinksWrapper({
-  record1,
-}: {
-  record1: Record & { Link: Link[] }
-}) {
-  const { links, record, add_new_link } = useStore()
+export default function ModifyLinksWrapper() {
+  const { links, record, add_link } = useStore()
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [parent] = useAutoAnimate()
 
   async function onSubmit(value: z.infer<typeof createNewLink>) {
     setIsLoading(true)
@@ -56,7 +54,7 @@ export default function ModifyLinksWrapper({
 
     if (links !== undefined && links.length > 0) {
       if (res.link) {
-        add_new_link(res.link)
+        add_link(res.link)
       }
     }
     setIsLoading(false)
@@ -161,18 +159,21 @@ export default function ModifyLinksWrapper({
                 </Form>
               </Card>
             )}
-
-            {links.map((link: Link, index: number, array: Link[]) => {
-              return (
-                <div className={"max-w-xl min-[300px]:w-[95%]"} key={index}>
+            <div
+              ref={parent}
+              className={
+                " flex  h-full w-full flex-col items-center justify-center gap-4"
+              }>
+              {links.map((link: Link, index: number, array: Link[]) => (
+                <div className={"max-w-xl min-[300px]:w-[95%]"} key={link.id}>
                   <ModifyLinkCard
                     link={link}
                     index={index}
                     max={array.length}
                   />
                 </div>
-              )
-            })}
+              ))}
+            </div>
           </div>
         </div>
 
