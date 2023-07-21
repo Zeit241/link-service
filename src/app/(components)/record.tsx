@@ -14,6 +14,7 @@ import {
   MoreHorizontal,
   Twitter,
 } from "lucide-react"
+import { CopyToClipboard } from "react-copy-to-clipboard"
 
 import LinkItem from "@/app/(components)/link"
 import { Button } from "@/app/(components)/ui/button"
@@ -31,17 +32,23 @@ type RecordPageProps = {
 }
 
 //TODO: Disable modal while component open in dashboard
-//TODO: Add useCopyClick hook
+
 export default function RecordPage({
   data,
   links = data.Link,
 }: RecordPageProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const [isIframe, setIsIframe] = useState<boolean>(false)
+  const [isIframe, setIsIframe] = useState<boolean>(true)
   const [copy, setCopy] = useState<boolean>(false)
   const [fullUrl, setFullUrl] = useState<string>("")
 
+  useEffect(() => {
+    if (!pathname.startsWith("/dashboard")) {
+      setIsIframe(false)
+    }
+    setFullUrl(window?.location?.href)
+  }, [pathname])
   const shareOnTwitter = async (): Promise<void> => {
     const url = `https://twitter.com/intent/tweet?text=Check%20out%20this%20link!%20-%20${fullUrl}`
     await router.push(url)
@@ -71,144 +78,145 @@ export default function RecordPage({
     return () => clearTimeout(timerID)
   }, [copy])
 
-  useEffect(() => {
-    if (pathname.startsWith("/dashboard")) {
-      console.log(true)
-      setIsIframe(true)
-    }
-    setFullUrl(window?.location?.href)
-  }, [pathname])
-
   return (
     <div
       className={`flex h-full min-h-full w-full flex-col items-center bg-background`}
       //style={{ backgroundColor: data.preferences.backgroundColor }}
     >
-      <div
-        className={
-          "flex h-20 w-[78%] min-w-[260px] max-w-[620px] flex-row  justify-end "
-        }>
-        <div className={"flex flex-row  items-center"}>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                disabled={isIframe}
-                className={"rounded-full bg-muted-foreground p-2"}
-                size={"icon"}
-                asChild>
-                <MoreHorizontal size={18} />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className={`w-full pl-2 pr-2`}>
-              <DialogHeader
-                className={"flex max-w-full items-center gap-2 p-0 "}>
-                <DialogTitle className={"mb-8"}>Share this link</DialogTitle>
+      {!isIframe && (
+        <div
+          className={`flex  h-20 w-[78%] min-w-[260px] max-w-[620px] flex-row justify-end`}>
+          <div className={"flex flex-row  items-center"}>
+            <Dialog>
+              <DialogTrigger asChild>
                 <Button
-                  onClick={shareOnTwitter}
-                  variant={"ghost"}
-                  className={
-                    "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
-                  }>
-                  <Twitter />
-                  <span
-                    className={"flex flex-1 flex-grow flex-wrap justify-start"}>
-                    Share on Twitter
-                  </span>
-                  <ChevronRight />
-                </Button>
-                <Button
-                  onClick={shareViaFacebook}
-                  variant={"ghost"}
-                  className={
-                    "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
-                  }>
-                  <Facebook />
-                  <span
-                    className={"flex flex-1 flex-grow flex-wrap justify-start"}>
-                    Share via Facebook
-                  </span>
-                  <ChevronRight />
-                </Button>
-                <Button
-                  onClick={shareViaEmail}
-                  variant={"ghost"}
-                  className={
-                    "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
-                  }>
-                  <Mail />
-                  <span
-                    className={"flex flex-1 flex-grow flex-wrap justify-start"}>
-                    Share via Email
-                  </span>
-                  <ChevronRight />
-                </Button>
-                <Button
-                  onClick={shareViaOther}
-                  variant={"ghost"}
-                  className={
-                    "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
-                  }>
-                  <ExternalLink />
-                  <span
-                    className={"flex flex-1 flex-grow flex-wrap justify-start"}>
-                    More options
-                  </span>
-                  <ChevronRight />
-                </Button>
-                <Button
-                  variant={"ghost"}
-                  className={
-                    "m-4 flex w-[90%] max-w-[90%] flex-row justify-between gap-2.5 border p-4 pb-7 pt-7"
-                  }
-                  onClick={async () => {
-                    setCopy(true)
-                    await window?.navigator?.clipboard?.writeText(fullUrl)
-                  }}>
-                  <LinkIcon />
-                  <span
-                    className={
-                      "flex flex-1 flex-grow flex-wrap justify-start overflow-hidden text-ellipsis whitespace-nowrap"
-                    }>
-                    {fullUrl}
-                  </span>
-                  <span className={copy ? "text-green-300" : ""}>
-                    {copy ? "Copied" : "Copy"}
-                  </span>
-                </Button>
-                <Button
-                  variant={"ghost"}
-                  className={
-                    "mt-5 flex h-16 w-full flex-row items-center  justify-between gap-2.5 border-b border-t"
-                  }
+                  disabled={isIframe}
+                  className={"rounded-full bg-muted-foreground p-2"}
+                  size={"icon"}
                   asChild>
-                  <Link href={`/report?id=${data.id}`} className={"flex"}>
-                    <Flag />
+                  <MoreHorizontal size={18} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className={`w-full pl-2 pr-2`}>
+                <DialogHeader
+                  className={"flex max-w-full items-center gap-2 p-0 "}>
+                  <DialogTitle className={"mb-8"}>Share this link</DialogTitle>
+                  <Button
+                    onClick={shareOnTwitter}
+                    variant={"ghost"}
+                    className={
+                      "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
+                    }>
+                    <Twitter />
                     <span
                       className={
                         "flex flex-1 flex-grow flex-wrap justify-start"
                       }>
-                      Report this link
+                      Share on Twitter
                     </span>
                     <ChevronRight />
-                  </Link>
-                </Button>
-                <>
-                  <h1 className={"text-xl font-bold"}>Create your own link</h1>
-                  <p className={"m-1"}>Share this link with your friends</p>
-                  <div className={"flex w-[65%] flex-col gap-2"}>
-                    <Button asChild>
-                      <Link href={"/login"}>Sign up for free</Link>
+                  </Button>
+                  <Button
+                    onClick={shareViaFacebook}
+                    variant={"ghost"}
+                    className={
+                      "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
+                    }>
+                    <Facebook />
+                    <span
+                      className={
+                        "flex flex-1 flex-grow flex-wrap justify-start"
+                      }>
+                      Share via Facebook
+                    </span>
+                    <ChevronRight />
+                  </Button>
+                  <Button
+                    onClick={shareViaEmail}
+                    variant={"ghost"}
+                    className={
+                      "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
+                    }>
+                    <Mail />
+                    <span
+                      className={
+                        "flex flex-1 flex-grow flex-wrap justify-start"
+                      }>
+                      Share via Email
+                    </span>
+                    <ChevronRight />
+                  </Button>
+                  <Button
+                    onClick={shareViaOther}
+                    variant={"ghost"}
+                    className={
+                      "flex w-full flex-row justify-between gap-2.5 p-4 pb-7 pt-7"
+                    }>
+                    <ExternalLink />
+                    <span
+                      className={
+                        "flex flex-1 flex-grow flex-wrap justify-start"
+                      }>
+                      More options
+                    </span>
+                    <ChevronRight />
+                  </Button>
+                  <CopyToClipboard text={fullUrl} onCopy={() => setCopy(true)}>
+                    <Button
+                      variant={"ghost"}
+                      className={
+                        "m-4 flex w-[90%] max-w-[90%] flex-row justify-between gap-2.5 border p-4 pb-7 pt-7"
+                      }>
+                      <LinkIcon />
+                      <span
+                        className={
+                          "flex flex-1 flex-grow flex-wrap justify-start overflow-hidden text-ellipsis whitespace-nowrap"
+                        }>
+                        {fullUrl}
+                      </span>
+                      <span className={copy ? "text-green-300" : ""}>
+                        {copy ? "Copied" : "Copy"}
+                      </span>
                     </Button>
-                    <Button variant={"secondary"}>
-                      <Link href={"/"}>What&apos;s this</Link>
-                    </Button>
-                  </div>
-                </>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+                  </CopyToClipboard>
+                  <Button
+                    variant={"ghost"}
+                    className={
+                      "mt-5 flex h-16 w-full flex-row items-center  justify-between gap-2.5 border-b border-t"
+                    }
+                    asChild>
+                    <Link href={`/report?id=${data.id}`} className={"flex"}>
+                      <Flag />
+                      <span
+                        className={
+                          "flex flex-1 flex-grow flex-wrap justify-start"
+                        }>
+                        Report this link
+                      </span>
+                      <ChevronRight />
+                    </Link>
+                  </Button>
+                  <>
+                    <h1 className={"text-xl font-bold"}>
+                      Create your own link
+                    </h1>
+                    <p className={"m-1"}>Share this link with your friends</p>
+                    <div className={"flex w-[65%] flex-col gap-2"}>
+                      <Button asChild>
+                        <Link href={"/login"}>Sign up for free</Link>
+                      </Button>
+                      <Button variant={"secondary"}>
+                        <Link href={"/"}>What&apos;s this</Link>
+                      </Button>
+                    </div>
+                  </>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
-      </div>
+      )}
+
       <nav className={"flex flex-col items-center p-8"}>
         <div
           className={
