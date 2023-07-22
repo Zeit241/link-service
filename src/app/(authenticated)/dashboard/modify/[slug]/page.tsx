@@ -16,7 +16,7 @@ export default async function ModifyPage({
     notFound()
   ) : (
     <>
-      <StoreInitializer data={record} />
+      <StoreInitializer record={record} links={record.Link} />
       <ModifyLinksWrapper />
     </>
   )
