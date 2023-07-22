@@ -2,9 +2,10 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogOut, Share2 as ShareIcon, User, Webhook } from "lucide-react"
+import { LogOut, User, Webhook } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 
+import NavbarPopover from "@/app/(components)/navbar-popover"
 import { Button } from "@/app/(components)/ui/button"
 import {
   DropdownMenu,
@@ -18,9 +19,8 @@ import {
 import { Skeleton } from "@/app/(components)/ui/skeleton"
 
 const nav_menu = [
-  { path: "dashboard", name: "Links" },
+  { path: "dashboard", name: "Dashboard" },
   { path: "settings", name: "Settings" },
-  { path: "analytics", name: "Analytics" },
 ]
 
 function NavbarLoading(): JSX.Element {
@@ -55,101 +55,101 @@ function UnauthenticatedNavbar(): JSX.Element {
 export default function Navbar(): JSX.Element {
   const pathname = usePathname()
   const session = useSession()
-
   if (session.status === "loading") {
     return <NavbarLoading />
   }
 
-  if (session.status === "unauthenticated") {
-    return <UnauthenticatedNavbar />
-  }
-
-  return (
-    <header
-      className={`flex h-14 w-full  max-w-[100vw] flex-row items-center justify-between border-b border-border bg-background pl-4 pr-8 sm:justify-normal`}>
-      <div className="logo">
-        <Webhook width={35} height={35} className={"mr-4 hover:animate-spin"} />
-      </div>
-      <nav className="list hidden flex-1 flex-row gap-3 xs:gap-2 sm:flex sm:gap-4">
-        {nav_menu.map((e: { path: string; name: string }) => {
-          const is_current_page = pathname.startsWith(`/${e.path}`)
-            ? "text-primary"
-            : "text-muted-foreground hover:text-primary"
-          return (
-            <Link
-              key={e.path}
-              href={`/${e.path}`}
-              className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}>
-              {e.name}
-            </Link>
-          )
-        })}
-        {session.data?.user.role === "ADMIN" && (
-          <Link
-            className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${
-              pathname.startsWith(`/admin`)
-                ? "text-primary"
-                : "text-muted-foreground hover:text-primary"
-            }`}
-            href={"/admin"}>
-            Admin
-          </Link>
-        )}
-      </nav>
-      {/*TODO: add a way to add here current editing link (new store?) or move it to new panel*/}
-      <div className="announcements"></div>
-      {pathname.includes("/modify/") && (
-        <div className="share-btn hidden md:flex lg:flex xl:flex ">
-          <Button size={"sm"}>
-            <ShareIcon className={"mr-2 "} />
-            Share
-          </Button>
+  if (session.status === "authenticated") {
+    return (
+      <header
+        className={`flex h-14 w-full  max-w-[100vw] flex-row items-center justify-between border-b border-border bg-background pl-4 pr-8 sm:justify-normal`}>
+        <div className="logo">
+          <Webhook
+            width={35}
+            height={35}
+            className={"mr-4 hover:animate-spin"}
+          />
         </div>
-      )}
+        <nav className="list hidden flex-1 flex-row gap-3 xs:gap-2 sm:flex sm:gap-4">
+          {nav_menu.map((e: { path: string; name: string }) => {
+            const is_current_page = pathname.startsWith(`/${e.path}`)
+              ? "text-primary"
+              : "text-muted-foreground hover:text-primary"
+            return (
+              <Link
+                key={e.path}
+                href={`/${e.path}`}
+                className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}>
+                {e.name}
+              </Link>
+            )
+          })}
+          {session.data?.user.role === "ADMIN" && (
+            <Link
+              className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${
+                pathname.startsWith(`/admin`)
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-primary"
+              }`}
+              href={"/admin"}>
+              Admin
+            </Link>
+          )}
+        </nav>
+        <div className="announcements"></div>
+        {pathname.includes("/modify/") && (
+          <div className="share-btn  ">
+            <NavbarPopover />
+          </div>
+        )}
 
-      <div className="user-info ml-5 text-white">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className={
-                "h-11 w-11 rounded-full bg-gray-600 text-xl font-semibold"
-              }>
-              {session.data?.user.username.charAt(0).toUpperCase()}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuGroup>
-              <div
-                className={"flex w-full flex-row items-center pl-1  pr-3 pt-3"}>
-                <div className="mr-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 text-xl font-semibold">
-                  {session.data?.user.username.charAt(0).toUpperCase()}
+        <div className="user-info ml-5 text-white">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className={
+                  "h-11 w-11 rounded-full bg-gray-600 text-xl font-semibold"
+                }>
+                {session.data?.user.username.charAt(0).toUpperCase()}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuGroup>
+                <div
+                  className={
+                    "flex w-full flex-row items-center pl-1  pr-3 pt-3"
+                  }>
+                  <div className="mr-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 text-xl font-semibold">
+                    {session.data?.user.username.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="">
+                    <h2 className={"p-0 text-lg font-bold"}>
+                      @{session.data?.user.username}
+                    </h2>
+                    <span className={"text-sm text-gray-400"}></span>
+                  </div>
                 </div>
-                <div className="">
-                  <h2 className={"p-0 text-lg font-bold"}>
-                    @{session.data?.user.username}
-                  </h2>
-                  <span className={"text-sm text-gray-400"}></span>
-                </div>
-              </div>
-            </DropdownMenuGroup>
-            <DropdownMenuLabel className={"mr-1.5 mt-3 text-[0.95rem]"}>
-              Account
-            </DropdownMenuLabel>
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+              </DropdownMenuGroup>
+              <DropdownMenuLabel className={"mr-1.5 mt-3 text-[0.95rem]"}>
+                Account
+              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => signOut()}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </header>
-  )
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+    )
+  }
+  return <UnauthenticatedNavbar />
 }
