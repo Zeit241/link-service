@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogOut, User, Webhook } from "lucide-react"
+import { LogOut, RefreshCcw, User, Webhook } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 
 import NavbarPopover from "@/app/(components)/navbar-popover"
@@ -64,10 +64,10 @@ export default function Navbar(): JSX.Element {
       <header
         className={`flex h-14 w-full  max-w-[100vw] flex-row items-center justify-between border-b border-border bg-background pl-4 pr-8 sm:justify-normal`}>
         <div className="logo">
-          <Webhook
+          <RefreshCcw
             width={35}
             height={35}
-            className={"mr-4 hover:animate-spin"}
+            className={"mr-4 cursor-pointer hover:animate-spin"}
           />
         </div>
         <nav className="list hidden flex-1 flex-row gap-3 xs:gap-2 sm:flex sm:gap-4">
