@@ -12,6 +12,7 @@ import {
   Link as LinkIcon,
   Mail,
   MoreHorizontal,
+  RefreshCcw,
   Twitter,
 } from "lucide-react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
@@ -237,7 +238,10 @@ export default function RecordPage({
         ))}
       </section>
       <div className={"mb-2 mt-12 flex items-center justify-center"}>
-        <h1 className={"items-center justify-center"}>PRETTY LINKS</h1>
+        <h1 className={"flex flex-row items-center justify-center gap-3 p-4 "}>
+          <RefreshCcw className={"animate-spin"} strokeWidth={3} />
+          <span className={"text-lg font-bold"}>LinkSync</span>
+        </h1>
       </div>
     </div>
   )
