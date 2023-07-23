@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { saveAs } from "file-saver"
+import { toPng } from "html-to-image"
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -13,10 +14,12 @@ import {
   Image as ImageIcon,
   Link as LinkIcon,
   QrCode,
+  RefreshCcw,
   Share2 as ShareIcon,
 } from "lucide-react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 
+import NavbarPopoverCarousel from "@/app/(components)/navbar-popover-carousel"
 import { Button } from "@/app/(components)/ui/button"
 import {
   Popover,
@@ -32,11 +35,15 @@ export default function NavbarPopover(): JSX.Element {
   const [showProjectPicture, setShowProjectPicture] = useState<boolean>(false)
   const [isCopied, setIsCopied] = useState<boolean>(false)
   const [url, setUrl] = useState<string>("")
+  const [prettyUrl, setPrettyUrl] = useState<string>("")
+
+  const QR = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const host = window?.location?.host
     const protocol = window?.location?.protocol
     const path = pathname.split("/")[3]
+    setPrettyUrl(host + "/" + path)
     setUrl(protocol + "//" + host + "/" + path)
   }, [pathname])
 
@@ -55,7 +62,7 @@ export default function NavbarPopover(): JSX.Element {
         setShowProjectPicture(false)
       }}>
       <PopoverTrigger asChild>
-        <Button size={"sm"} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+        <Button onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
           <ShareIcon className={"mr-2 "} size={17} />
           Share
         </Button>
@@ -118,12 +125,12 @@ export default function NavbarPopover(): JSX.Element {
                 className={
                   "m-4 flex w-[90%] max-w-[90%] flex-row justify-between gap-2.5 border p-4 pb-7 pt-7"
                 }>
-                <LinkIcon size={16} />
+                <LinkIcon size={18} />
                 <span
                   className={
-                    "flex w-[90%] flex-1 flex-grow flex-wrap justify-start overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium"
+                    "flex w-[85%] flex-grow flex-wrap justify-start overflow-hidden text-ellipsis whitespace-nowrap"
                   }>
-                  {url}
+                  {prettyUrl}
                 </span>
                 <span className={isCopied ? "text-green-300" : ""}>
                   {isCopied ? "Copied" : "Copy"}
@@ -152,35 +159,45 @@ export default function NavbarPopover(): JSX.Element {
                 <span className={"text-lg font-bold"}>QR code</span>
               </div>
             </div>
+
             <div
               className={
-                "mt-6 flex w-full flex-col items-center justify-center gap-2"
+                "mt-2.5 flex w-full flex-col items-center justify-center gap-2"
               }>
+              <p className={"mb-2 text-center text-sm text-muted-foreground"}>
+                Here is your unique LinkSync QR code that will direct people to
+                your project when scanned.
+              </p>
               <div
+                ref={QR}
                 className={
-                  "flex h-[220px] w-[220px] flex-col items-center justify-center rounded-md bg-white"
+                  "flex h-auto w-[220px] flex-col items-center justify-center rounded-md bg-white"
                 }>
                 <Image
+                  className={"m-4"}
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${url}`}
                   alt={"1"}
-                  width={200}
-                  height={200}
-                  onLoad={() => console.log(1)}
+                  width={150}
+                  height={150}
                 />
+                <span
+                  className={
+                    "text-md flex flex-row items-center gap-1.5 overflow-x-hidden break-all p-2 pt-0 text-center font-semibold text-black"
+                  }>
+                  <RefreshCcw size={20} />
+                  {prettyUrl}
+                </span>
               </div>
               <div
                 className={"flex w-full flex-col items-center justify-center"}>
                 <Button
-                  onClick={() =>
-                    saveAs(
-                      `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${url}`,
-                      "qr-code.png"
-                    )
-                  }
+                  onClick={() => {
+                    toPng(QR.current!, { cacheBust: true }).then((data) => {
+                      saveAs(data, "qr-code.png")
+                    })
+                  }}
                   variant={"ghost"}
-                  className={
-                    "mt-4 flex w-full flex-row items-center justify-center p-8 pl-4 pr-4"
-                  }>
+                  className={" "}>
                   <div className={"flex flex-grow flex-col items-start"}>
                     <span className={"text-md font-bold"}>Download</span>
                     <span className={"text-sm text-muted-foreground"}>
@@ -199,11 +216,37 @@ export default function NavbarPopover(): JSX.Element {
             </div>
           </div>
         )}
-        {/*
-          https://www.npmjs.com/package/html-to-image
-          https://app.haikei.app/
-        */}
-        {showProjectPicture && <></>}
+        {showProjectPicture && (
+          <>
+            <div
+              className={
+                "mb-3 flex w-full flex-row items-center justify-center"
+              }>
+              <div
+                onClick={() => {
+                  setShowMainSage(true)
+                  setShowProjectPicture(false)
+                }}
+                className={
+                  "cursor-pointer justify-start rounded-full p-2 hover:bg-muted"
+                }>
+                <ArrowLeft size={18} />
+              </div>
+              <div
+                className={
+                  " flex  flex-grow flex-row justify-center text-center"
+                }>
+                <span className={"text-lg font-bold"}>
+                  Share project picture
+                </span>
+              </div>
+            </div>
+            <NavbarPopoverCarousel
+              name={pathname.split("/")[3]}
+              prettyUrl={prettyUrl}
+            />
+          </>
+        )}
       </PopoverContent>
     </Popover>
   )
