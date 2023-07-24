@@ -141,7 +141,7 @@ export default function CreateCardBtn({ id }: { id: string }) {
                                     ? "border-green-500"
                                     : ""
                                 }`}>
-                                {"prettylinks.com/"}
+                                {"linksync.com/"}
                               </Card>
                               <Input
                                 {...field}
