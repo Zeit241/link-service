@@ -231,7 +231,7 @@ export default function RecordPage({
       </nav>
       <section
         className={
-          "m-0 flex h-full w-full flex-1 flex-col flex-wrap content-center items-center justify-start gap-4"
+          "m-0 flex h-auto w-full flex-col content-center items-center justify-start gap-4"
         }>
         {links.map((link: LinkType) => (
           <LinkItem key={link.id} link={link} />
