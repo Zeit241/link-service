@@ -6,7 +6,7 @@ import { Metadata } from "next"
 import { Toaster } from "@/app/(components)/ui/toaster"
 
 export const metadata: Metadata = {
-  title: "Pretty Links | Yours links list",
+  title: "LinkSync | Yours links list",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
