@@ -12,7 +12,7 @@ export async function generateMetadata({
   params: { slug: string }
 }): Promise<Metadata> {
   return {
-    title: `@${params.slug} | Pretty Links`,
+    title: `@${params.slug} | LinkSync`,
   }
 }
 
@@ -21,8 +21,12 @@ export default async function RecordsPage({
 }: {
   params: { slug: string }
 }) {
-  const data = await GetRecordLinks({ url: params.slug, enabled: true })
-  return !data || data?.Link.length < 1 || !data?.enabled ? (
+  const data = await GetRecordLinks({
+    url: params.slug,
+    recordEnabled: true,
+    linkEnabled: true,
+  })
+  return !data || data?.Link.length < 1 ? (
     notFound()
   ) : (
     <div className={"h-full overflow-x-hidden"}>

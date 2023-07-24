@@ -10,7 +10,11 @@ export default async function ModifyPage({
 }: {
   params: { slug: string }
 }) {
-  const record = await GetRecordLinks({ url: params.slug, enabled: false })
+  const record = await GetRecordLinks({
+    url: params.slug,
+    linkEnabled: false,
+    recordEnabled: false,
+  })
 
   return !record ? (
     notFound()

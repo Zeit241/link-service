@@ -128,24 +128,26 @@ export const VerifyRecordName = async ({
   }
 }
 
-type GetRecordLinksProps = Pick<Record, "url"> & Pick<Record, "enabled">
+type GetRecordLinksProps = {
+  linkEnabled: boolean
+  recordEnabled: boolean
+  url: string
+}
 type GetRecordLinksResult = (Record & { Link: Link[] }) | null
 
 export const GetRecordLinks = cache(
-  async ({
-    url,
-    enabled,
-  }: Prettify<GetRecordLinksProps>): Promise<GetRecordLinksResult> => {
+  async (
+    data: Prettify<GetRecordLinksProps>
+  ): Promise<GetRecordLinksResult> => {
+    const { recordEnabled, linkEnabled, url } = data
     const record = await prisma.record.findUnique({
       where: {
-        url,
-        //enabled: !enabled,
+        url: url,
+        enabled: recordEnabled ? true : undefined,
       },
       include: {
         Link: {
-          // where: {
-          //   enabled && enabled,
-          // },
+          where: linkEnabled ? { enabled: true } : undefined,
           orderBy: {
             order: "asc",
           },
