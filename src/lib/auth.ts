@@ -24,10 +24,13 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null
 
         //TODO: ADD PASSWORD VALIDATION
-
         //const isPassportValid = await bcrypt.compare(password, user.password);
         //if (!isPassportValid) return null;
-        return user
+        return {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+        }
       },
     }),
   ],
