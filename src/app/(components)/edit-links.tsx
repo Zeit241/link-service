@@ -6,7 +6,13 @@ import { useState } from "react"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "@prisma/client"
-import { Loader2, Plus, X } from "lucide-react"
+import {
+  Loader2,
+  PanelBottomClose,
+  PanelBottomOpen,
+  Plus,
+  X,
+} from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -41,8 +47,22 @@ export default function EditLinks(): JSX.Element {
   const { links, record, add_link } = useStore()
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState<boolean>(false)
   const [list] = useAutoAnimate()
   const [card] = useAutoAnimate()
+  const [mobilePreview] = useAutoAnimate()
+
+  const getSiteTitle = async (url: string) => {
+    console.log(url)
+    let title
+    fetch(url)
+      .then((response) => response.text())
+      .then((str) => {
+        title = str.split("<title>")[1].split("</title>")[0]
+        console.log(title)
+      })
+    return title
+  }
 
   async function onSubmit(value: z.infer<typeof createNewLink>) {
     setIsLoading(true)
@@ -52,7 +72,7 @@ export default function EditLinks(): JSX.Element {
       recordId: record.id,
       order: record.Link.length,
     })
-
+    await getSiteTitle(value.url)
     form.reset()
     res.link ? add_link(res.link) : null
     setIsLoading(false)
@@ -70,15 +90,20 @@ export default function EditLinks(): JSX.Element {
   return (
     <>
       <div
-        className={"flex w-full flex-row items-start justify-center p-8 pb-0"}>
-        <div className={"flex flex-1 flex-wrap items-center  justify-center"}>
+        className={
+          "relative flex w-full flex-row items-start justify-center p-8 pb-0 min-[100px]:p-2"
+        }>
+        <div
+          className={
+            "flex w-full flex-1 flex-wrap items-center justify-center"
+          }>
           <div
             className={"flex w-full flex-col items-center gap-5 pb-4 pt-4"}
             ref={card}>
             {!isAddCardOpen && (
               <Button
                 variant="secondary"
-                className="max-w-xl p-4 min-[320px]:w-[95%]"
+                className="max-w-xl p-4 min-[100px]:w-[98%]"
                 onClick={() => {
                   setIsAddCardOpen(true)
                 }}>
@@ -165,7 +190,9 @@ export default function EditLinks(): JSX.Element {
                 " flex  h-full w-full flex-col items-center justify-center gap-4"
               }>
               {links.map((link: Link, index: number, array: Link[]) => (
-                <div className={"max-w-xl min-[300px]:w-[95%]"} key={link.id}>
+                <div
+                  className={"w-[640px] max-w-xl min-[300px]:w-[95%]"}
+                  key={link.id}>
                   <ModifyLinkCard
                     link={link}
                     index={index}
@@ -179,11 +206,32 @@ export default function EditLinks(): JSX.Element {
 
         <div
           className={
-            "sticky top-[22%] mr-6 hidden h-[620px] w-[320px] min-w-[320px] overflow-hidden rounded-[50px] border-[15px] md:block lg:block xl:block"
+            "sticky top-[22%] mr-6 hidden h-[620px] w-[320px] min-w-[320px] overflow-hidden rounded-[50px] border-[15px] min-[890px]:block lg:m-16"
           }>
-          <div className={"h-full w-full overflow-x-hidden "}>
-            <RecordPage data={record} links={links} />
+          <div
+            className={"h-full w-full overflow-x-hidden "}
+            ref={mobilePreview}>
+            <RecordPage data={record} links={links.filter((l) => l.enabled)} />
           </div>
+        </div>
+        {isMobilePreviewOpen && (
+          <div
+            className={
+              "fixed bottom-[0%] right-[0%] h-full w-full overflow-y-scroll bg-background min-[890px]:hidden"
+            }>
+            <RecordPage data={record} links={links.filter((l) => l.enabled)} />
+          </div>
+        )}
+        <div
+          className={
+            "fixed bottom-[5%] right-[50%] translate-x-[+50%] min-[890px]:hidden"
+          }>
+          <Button
+            className={"flex w-40 flex-row gap-3 p-8 pb-6 pt-6"}
+            onClick={() => setIsMobilePreviewOpen(!isMobilePreviewOpen)}>
+            Preview
+            {isMobilePreviewOpen ? <PanelBottomClose /> : <PanelBottomOpen />}
+          </Button>
         </div>
       </div>
     </>
