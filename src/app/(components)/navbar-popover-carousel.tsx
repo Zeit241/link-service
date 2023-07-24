@@ -49,7 +49,7 @@ export default function NavbarPopoverCarousel({
                       className={
                         "mt-[-25px] flex h-16 w-16 items-center justify-center rounded-full bg-muted-foreground text-2xl font-extrabold"
                       }>
-                      {name.charAt(0).toUpperCase()}
+                      {name?.charAt(0)?.toUpperCase()}
                     </div>
                     <span className={"p-4 text-lg font-bold text-black"}>
                       {name}

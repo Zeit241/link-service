@@ -13,6 +13,7 @@ import {
   FileDown,
   Image as ImageIcon,
   Link as LinkIcon,
+  Loader2,
   QrCode,
   RefreshCcw,
   Share2 as ShareIcon,
@@ -36,7 +37,7 @@ export default function NavbarPopover(): JSX.Element {
   const [isCopied, setIsCopied] = useState<boolean>(false)
   const [url, setUrl] = useState<string>("")
   const [prettyUrl, setPrettyUrl] = useState<string>("")
-
+  const [imageLoading, setImageLoading] = useState<boolean>(true)
   const QR = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -154,7 +155,7 @@ export default function NavbarPopover(): JSX.Element {
               </div>
               <div
                 className={
-                  "ml-[-18px] flex  flex-grow flex-row justify-center text-center"
+                  " flex  flex-grow flex-row justify-center text-center"
                 }>
                 <span className={"text-lg font-bold"}>QR code</span>
               </div>
@@ -173,12 +174,15 @@ export default function NavbarPopover(): JSX.Element {
                 className={
                   "flex h-auto w-[220px] flex-col items-center justify-center rounded-md bg-white"
                 }>
+                {imageLoading && <Loader2 className={"animate-spin"} />}
+
                 <Image
                   className={"m-4"}
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${url}`}
                   alt={"1"}
                   width={150}
                   height={150}
+                  onLoad={() => setImageLoading(false)}
                 />
                 <span
                   className={
@@ -197,7 +201,9 @@ export default function NavbarPopover(): JSX.Element {
                     })
                   }}
                   variant={"ghost"}
-                  className={" "}>
+                  className={
+                    "mt-2 flex w-full flex-row items-center justify-center p-8 pl-4 pr-4"
+                  }>
                   <div className={"flex flex-grow flex-col items-start"}>
                     <span className={"text-md font-bold"}>Download</span>
                     <span className={"text-sm text-muted-foreground"}>

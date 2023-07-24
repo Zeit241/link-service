@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LogOut, RefreshCcw, User, Webhook } from "lucide-react"
@@ -56,10 +56,11 @@ function UnauthenticatedNavbar(): JSX.Element {
 export default function Navbar(): JSX.Element {
   const pathname = usePathname()
   const session = useSession()
-
+  const [shareBtnShow, setShareBtnShow] = useState<boolean>(false)
   useEffect(() => {
     console.log(pathname)
     console.log(pathname.includes("/modify/"))
+    setShareBtnShow(pathname.includes("/modify/"))
   }, [pathname])
 
   if (session.status === "loading") {
@@ -103,7 +104,7 @@ export default function Navbar(): JSX.Element {
             </Link>
           )}
         </nav>
-        {true && (
+        {shareBtnShow && (
           <div>
             <NavbarPopover />
           </div>
