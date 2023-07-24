@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LogOut, RefreshCcw, User, Webhook } from "lucide-react"
@@ -55,6 +56,12 @@ function UnauthenticatedNavbar(): JSX.Element {
 export default function Navbar(): JSX.Element {
   const pathname = usePathname()
   const session = useSession()
+
+  useEffect(() => {
+    console.log(pathname)
+    console.log(pathname.includes("/modify/"))
+  }, [pathname])
+
   if (session.status === "loading") {
     return <NavbarLoading />
   }
