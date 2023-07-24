@@ -103,9 +103,8 @@ export default function Navbar(): JSX.Element {
             </Link>
           )}
         </nav>
-        <div className="announcements"></div>
-        {pathname.includes("/modify/") && (
-          <div className="share-btn  ">
+        {true && (
+          <div>
             <NavbarPopover />
           </div>
         )}
