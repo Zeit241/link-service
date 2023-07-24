@@ -115,14 +115,17 @@ export default function ModifyLinkCard({
         </div>
         <div
           className={
-            "flex w-full  flex-row items-center justify-between gap-6 pl-1 pr-3"
+            "flex w-full flex-row items-center justify-between overflow-hidden"
           }>
-          <div className={"flex w-full flex-col overflow-x-hidden"}>
-            <div className={"flex flex-row items-center justify-between "}>
-              <div className={"flex flex-row items-center gap-2 "}>
+          <div className={"flex w-[70%] flex-grow flex-col"}>
+            <div className={"flex flex-row"}>
+              <div className={"flex max-w-[85%] flex-row items-center gap-2 "}>
                 {!isNameEditing && (
                   <>
-                    <span className={"text-ellipsis text-lg font-semibold"}>
+                    <span
+                      className={
+                        " w-full overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold"
+                      }>
                       {nameValue}
                     </span>
                     <Pencil
@@ -147,7 +150,7 @@ export default function ModifyLinkCard({
                 ref={name}
               />
             </div>
-            <div className={"flex flex-row items-center justify-between "}>
+            <div className={"flex flex-row "}>
               <div
                 className={
                   "flex w-fit max-w-[75%] flex-row items-center gap-2 "
@@ -189,6 +192,7 @@ export default function ModifyLinkCard({
               onCheckedChange={async () => {
                 setIsLoading(true)
                 setIsEnabled(!isEnabled)
+                modify_link(link.id, { enabled: !isEnabled })
                 await UpdateLink({ id: link.id, enabled: !link.enabled })
                 setIsLoading(false)
               }}
