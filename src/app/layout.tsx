@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
+  other: {
+    "yandex-verification": "91212f63eccaa370",
+  },
 }
 export default function RootLayout({
   children,

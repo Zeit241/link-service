@@ -8,9 +8,6 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-  other: {
-    "yandex-verification": "93d9a6e4b08dddcd",
-  },
 }
 export default function DashboardLayout({
   children,
