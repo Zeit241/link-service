@@ -217,21 +217,19 @@ export default function RecordPage({
           </div>
         </div>
       )}
-
       <nav className={"flex flex-col items-center p-8"}>
         <div
           className={
             "flex h-20 w-20 select-none items-center justify-center rounded-full bg-muted-foreground text-center text-4xl text-white"
           }>
-          {data.name.charAt(0).toUpperCase()}
+          {data?.name?.charAt(0)?.toUpperCase()}
         </div>
-
-        <span className={"mb-1 mt-6 font-bold uppercase"}>{data.name}</span>
-        <p>{data.description}</p>
+        <span className={"mb-1 mt-6 font-bold uppercase"}>{data?.name}</span>
+        <p>{data?.description}</p>
       </nav>
       <section
         className={
-          "m-0 flex h-auto w-full flex-col content-center items-center justify-start gap-4"
+          "m-0 flex h-auto w-full flex-1 flex-col content-center items-center justify-start gap-4"
         }>
         {links.map((link: LinkType) => (
           <LinkItem key={link.id} link={link} />
