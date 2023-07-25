@@ -95,12 +95,11 @@ export default function ModifyLinkCard({
   }
 
   return (
-    <>
-      {/*{isLoading && <AbsoluteLoader />}*/}
+    <div className={"w-[640px] max-w-xl min-[300px]:w-[95%]"}>
       <Card className={"flex w-full flex-row border p-3"}>
         <div className={"mr-4 flex flex-col gap-0.5"}>
           <ChevronUp
-            className={` ${
+            className={`${
               index > 0
                 ? "cursor-pointer hover:scale-125"
                 : "cursor-not-allowed "
@@ -109,8 +108,12 @@ export default function ModifyLinkCard({
           />
           <span>#{index + 1}</span>
           <ChevronDown
-            className={"cursor-pointer hover:scale-125"}
-            onClick={index < max ? increase_link_index : () => {}}
+            className={`${
+              index !== max
+                ? "cursor-pointer hover:scale-125"
+                : "cursor-not-allowed "
+            }`}
+            onClick={index !== max ? increase_link_index : () => {}}
           />
         </div>
         <div
@@ -124,12 +127,13 @@ export default function ModifyLinkCard({
                   <>
                     <span
                       className={
-                        " w-full overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold"
+                        "w-full overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold"
                       }>
                       {nameValue}
                     </span>
                     <Pencil
-                      size={14}
+                      width={18}
+                      height={18}
                       className={"cursor-pointer hover:scale-110"}
                       onClick={() => {
                         setIsNameEditing(true)
@@ -164,7 +168,8 @@ export default function ModifyLinkCard({
                       {urlValue}
                     </span>
                     <Pencil
-                      size={18}
+                      width={18}
+                      height={18}
                       className={"cursor-pointer hover:scale-110"}
                       onClick={() => {
                         setIsUrlEditing(true)
@@ -214,6 +219,6 @@ export default function ModifyLinkCard({
           </div>
         </div>
       </Card>
-    </>
+    </div>
   )
 }
