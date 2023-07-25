@@ -71,7 +71,6 @@ export const useStore = create<State>((set, get) => ({
       }
       return link
     })
-
     updated_links.sort((a: Link, b: Link) => a.order - b.order)
     set({
       links: updated_links,
