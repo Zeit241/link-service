@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LogOut, RefreshCcw, User, Webhook } from "lucide-react"
+import { LogOut, RefreshCcw, User } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 
 import NavbarPopover from "@/app/(components)/navbar-popover"
@@ -24,6 +24,18 @@ const nav_menu = [
   { path: "settings", name: "Settings" },
 ]
 
+function Logo(): JSX.Element {
+  return (
+    <Link href={"/"}>
+      <RefreshCcw
+        width={35}
+        height={35}
+        className={"mr-4 hover:animate-spin"}
+      />
+    </Link>
+  )
+}
+
 function NavbarLoading(): JSX.Element {
   return (
     <Skeleton
@@ -39,7 +51,7 @@ function UnauthenticatedNavbar(): JSX.Element {
         "flex h-14 w-full max-w-[100vw] flex-row items-center justify-between border-b border-border bg-background pl-4 pr-8"
       }>
       <div className="logo">
-        <Webhook width={35} height={35} className={"mr-4 hover:animate-spin"} />
+        <Logo />
       </div>
       <div className={"flex items-end justify-end gap-2.5"}>
         <Button className={"flex gap-2.5"} asChild>
@@ -57,26 +69,17 @@ export default function Navbar(): JSX.Element {
   const pathname = usePathname()
   const session = useSession()
   const [shareBtnShow, setShareBtnShow] = useState<boolean>(false)
+
   useEffect(() => {
-    console.log(pathname)
-    console.log(pathname.includes("/modify/"))
     setShareBtnShow(pathname.includes("/modify/"))
   }, [pathname])
-
-  if (session.status === "loading") {
-    return <NavbarLoading />
-  }
 
   if (session.status === "authenticated") {
     return (
       <header
         className={`flex h-14 w-full  max-w-[100vw] flex-row items-center justify-between border-b border-border bg-background pl-4 pr-8 sm:justify-normal`}>
         <div className="logo">
-          <RefreshCcw
-            width={35}
-            height={35}
-            className={"mr-4 cursor-pointer hover:animate-spin"}
-          />
+          <Logo />
         </div>
         <nav className="list hidden flex-1 flex-row gap-3 xs:gap-2 sm:flex sm:gap-4">
           {nav_menu.map((e: { path: string; name: string }) => {
@@ -157,6 +160,9 @@ export default function Navbar(): JSX.Element {
         </div>
       </header>
     )
+  }
+  if (session.status === "loading") {
+    return <NavbarLoading />
   }
   return <UnauthenticatedNavbar />
 }
