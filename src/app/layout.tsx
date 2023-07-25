@@ -7,13 +7,33 @@ import { Toaster } from "@/app/(components)/ui/toaster"
 
 export const metadata: Metadata = {
   title: "LinkSync | Yours links list",
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        rel: "apple-touch-icon",
+      },
+      {
+        url: "/favicon-32x32.png",
+        sizes: "32x32",
+        rel: "icon",
+        type: "image/png",
+      },
+      {
+        url: "/favicon-16x16.png",
+        sizes: "16x16",
+        rel: "icon",
+        type: "image/png",
+      },
+    ],
+  },
+
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-  other: {
-    "yandex-verification": "91212f63eccaa370",
-  },
 }
 export default function RootLayout({
   children,
