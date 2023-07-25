@@ -1,18 +1,21 @@
-import {ReactNode, Suspense} from "react"
-import {Metadata} from "next"
+import { ReactNode, Suspense } from "react"
+import { Metadata } from "next"
 
 import DashboardLoading from "@/app/(authenticated)/dashboard/loading"
 
 export const metadata: Metadata = {
-    themeColor: [
-        {media: "(prefers-color-scheme: light)", color: "white"},
-        {media: "(prefers-color-scheme: dark)", color: "black"},
-    ],
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  other: {
+    "yandex-verification": "93d9a6e4b08dddcd",
+  },
 }
 export default function DashboardLayout({
-                                            children,
-                                        }: {
-    children: ReactNode
+  children,
+}: {
+  children: ReactNode
 }): JSX.Element {
-    return <Suspense fallback={<DashboardLoading/>}>{children}</Suspense>
+  return <Suspense fallback={<DashboardLoading />}>{children}</Suspense>
 }
