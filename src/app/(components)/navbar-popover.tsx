@@ -107,6 +107,7 @@ export default function NavbarPopover(): JSX.Element {
               </Button>
               <Link
                 href={url}
+                target="_blank"
                 className={
                   "flex w-full flex-row items-center justify-between gap-2.5 rounded p-4 hover:bg-muted"
                 }>
