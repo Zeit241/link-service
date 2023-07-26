@@ -78,6 +78,8 @@ model Link {
   record      Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
   recordId    String       @db.ObjectId
   order       Int          @default(0)
+  type        LinkType     @default(URL)
+  error       Boolean      @default(false)
   url         String
   name        String
   enabled     Boolean      @default(true)
@@ -143,4 +145,19 @@ enum ShareTo {
   FACEBOOK
   TWITTER
   OTHER
+}
+
+enum LinkType {
+  URL
+  HEADER
+  EMAIL
+  DOCUMENT
+  VIDEO
+  CONTACT
+}
+
+enum LinkWarnType {
+  // CODE
+  // AGE
+  ADULT
 }
