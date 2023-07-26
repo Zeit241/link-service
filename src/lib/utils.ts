@@ -1,3 +1,4 @@
+import punycode from "punycode"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -5,7 +6,53 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function isWordNotAllowed(word: string) {
+type LinkType = "URL" | "EMAIL" | false
+
+export function getLinkType({ url }: { url: string }): LinkType {
+  const url_regex = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[-*a-z\\d]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$", // fragment locator
+    "i"
+  )
+
+  if (url_regex.test(punycode.toASCII(url))) {
+    return "URL"
+  }
+
+  const email_regex =
+    /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/
+  if (email_regex.test(url)) {
+    return "EMAIL"
+  }
+  return false
+}
+
+export function urlNormalize({ url }: { url: string }): string {
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    return url
+  }
+  return `https://${url}`
+}
+
+// export async function getUrlIcon({
+//   url,
+// }: {
+//   url: string
+// }): Promise<string | false> {
+//   const response = await fetch(
+//     `https://www.google.com/s2/favicons?domain=${url}&sz=256`
+//   )
+//   if (response.status === 200) {
+//     return await response.text()
+//   }
+//   return false
+// }
+
+export function isWordNotAllowed(word: string): boolean {
   return (
     service_words.includes(word.trim().toLowerCase()) ||
     service_words.includes(word.trim().toUpperCase())
