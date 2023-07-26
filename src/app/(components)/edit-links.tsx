@@ -1,8 +1,8 @@
 "use client"
 
-import * as punycode from "punycode"
 import * as React from "react"
 import { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
 import autoAnimate from "@formkit/auto-animate"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -19,6 +19,7 @@ import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { useStore } from "@/lib/store/store"
+import { getLinkType, urlNormalize } from "@/lib/utils"
 import ModifyLinkCard from "@/app/(components)/modify-link-card"
 import RecordPage from "@/app/(components)/record"
 import {
@@ -32,26 +33,11 @@ import { Form, FormField, FormItem } from "@/app/(components)/ui/form"
 import { Input } from "@/app/(components)/ui/input"
 import { Label } from "@/app/(components)/ui/label"
 import { CreateLink } from "@/app/actions/link"
+import { getUrlTitle } from "@/app/actions/utils"
 
-const createNewLink = z.object({
-  url: z.string().refine(
-    (value) => {
-      const pattern = new RegExp(
-        "^(https?:\\/\\/)?" + // protocol
-          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[-*a-z\\d]{2,}|" + // domain name
-          "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP (v4) address
-          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-          "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-          "(\\#[-a-z\\d_]*)?$", // fragment locator
-        "i"
-      )
-      return pattern.test(punycode.toASCII(value))
-    },
-    { message: "Invalid URL" }
-  ),
-})
 export default function EditLinks(): JSX.Element {
   const { links, record, add_link } = useStore()
+  const pathname = usePathname()
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState<boolean>(false)
@@ -59,7 +45,7 @@ export default function EditLinks(): JSX.Element {
   const [list] = useAutoAnimate()
   const [card] = useAutoAnimate()
   const mobilePreview = useRef<HTMLDivElement>(null)
-  const alert = useRef(null)
+  const alert = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     alert.current && autoAnimate(alert.current)
@@ -69,41 +55,72 @@ export default function EditLinks(): JSX.Element {
     mobilePreview.current && autoAnimate(mobilePreview.current, {})
   }, [mobilePreview])
 
-  const getSiteTitle = async (url: string) => {
-    console.log(url)
-    let title
-    fetch(url)
-      .then((response) => response.text())
-      .then((str) => {
-        title = str.split("<title>")[1].split("</title>")[0]
-        console.log(title)
-      })
-    return title
-  }
+  const createNewLink = z.object({
+    url: z.string().refine(
+      (value) => {
+        const type = getLinkType({ url: value.trim().toLowerCase() })
+        console.log(type)
+        if (!!type) {
+          form.setValue("type", type)
+        }
+        return !!type
+      },
+      { message: "Invalid URL" }
+    ),
+    type: z.enum(["URL", "EMAIL", "HEADER", "DOCUMENT", "VIDEO", "CONTACT"]),
+  })
 
   async function onSubmit(value: z.infer<typeof createNewLink>) {
     setIsLoading(true)
+
+    let name = value.url
+    let url = value.url
+
+    if (value.type === "URL") {
+      url = urlNormalize({ url })
+      name = await getUrlTitle({ url })
+    }
+
+    if (value.type === "EMAIL") {
+      url = `mailto:${url}`
+    }
+
     const res = await CreateLink({
-      url: value.url,
-      name: value.url,
+      url: url,
+      name: name,
       recordId: record.id,
       order: links.length,
+      type: value.type,
     })
-    await getSiteTitle(value.url)
+
     form.reset()
     res.link ? add_link(res.link) : null
     setIsLoading(false)
     setIsAddCardOpen(false)
   }
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (isLoading) {
+        window?.event?.preventDefault()
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [isLoading, pathname])
+
   const form = useForm<z.infer<typeof createNewLink>>({
     resolver: zodResolver(createNewLink),
-    mode: "onChange",
+    mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
       url: "",
+      type: "URL",
     },
   })
+
   return (
     <>
       <div ref={alert}>
@@ -155,32 +172,31 @@ export default function EditLinks(): JSX.Element {
                 className={
                   "flex max-w-xl flex-col gap-4 p-4 min-[320px]:w-[95%]"
                 }>
+                <div
+                  className={
+                    "flex w-full flex-row items-center justify-between"
+                  }>
+                  <Label htmlFor={"url"}>Enter URL</Label>
+                  <Button
+                    disabled={isLoading}
+                    variant="ghost"
+                    size="icon"
+                    autoFocus={false}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsAddCardOpen(false)
+                    }}>
+                    <X size={18} />
+                  </Button>
+                </div>
                 <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8">
+                  <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="">
                       <FormField
                         control={form.control}
                         name="url"
                         render={({ field }) => (
                           <FormItem>
-                            <div
-                              className={
-                                "flex w-full flex-row items-center justify-between"
-                              }>
-                              <Label htmlFor={"url"}>Enter URL</Label>
-                              <Button
-                                disabled={isLoading}
-                                variant="ghost"
-                                size="icon"
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  setIsAddCardOpen(false)
-                                }}>
-                                <X size={18} />
-                              </Button>
-                            </div>
                             <div className={"flex flex-row items-center gap-3"}>
                               <Controller
                                 name="url"
@@ -197,6 +213,7 @@ export default function EditLinks(): JSX.Element {
                                       autoCorrect="off"
                                       spellCheck={"false"}
                                       onChange={onChange}
+                                      autoFocus={true}
                                       className={`${isLoading ? "hidden" : ""}`}
                                     />
                                   </>
@@ -204,6 +221,7 @@ export default function EditLinks(): JSX.Element {
                               />
                               <Button
                                 disabled={
+                                  !form.formState.isValid ||
                                   !!form.formState.errors.url?.message ||
                                   isLoading
                                 }
@@ -219,6 +237,55 @@ export default function EditLinks(): JSX.Element {
                           </FormItem>
                         )}
                       />
+                      {/*TODO rework prisma scheme to support multiple types*/}
+                      {/*<FormField*/}
+                      {/*  control={form.control}*/}
+                      {/*  name="type"*/}
+                      {/*  render={({ field }) => (*/}
+                      {/*    <FormItem className={""}>*/}
+                      {/*      <div*/}
+                      {/*        onClick={() => form.setValue("type", "URL")}*/}
+                      {/*        className={*/}
+                      {/*          "flex flex-col items-center justify-center p-4 "*/}
+                      {/*        }>*/}
+                      {/*        <div*/}
+                      {/*          id={"URL"}*/}
+                      {/*          className={`mb-2 flex h-20 w-20  cursor-pointer flex-row items-center justify-center gap-3 rounded-xl bg-secondary */}
+                      {/*          ${*/}
+                      {/*            form.getValues("type") === "URL" &&*/}
+                      {/*            "scale-95 outline outline-1 outline-offset-4 outline-white"*/}
+                      {/*          }`}>*/}
+                      {/*          <LinkIcon size={32} />*/}
+                      {/*        </div>*/}
+                      {/*        <Label*/}
+                      {/*          htmlFor={"URL"}*/}
+                      {/*          className={"cursor-pointer"}>*/}
+                      {/*          URL*/}
+                      {/*        </Label>*/}
+                      {/*      </div>*/}
+                      {/*      <div*/}
+                      {/*        onClick={() => form.setValue("type", "HEADER")}*/}
+                      {/*        className={*/}
+                      {/*          "flex flex-col items-center justify-center p-4 "*/}
+                      {/*        }>*/}
+                      {/*        <div*/}
+                      {/*          id={"HEADER"}*/}
+                      {/*          className={`mb-2 flex h-20 w-20  cursor-pointer flex-row items-center justify-center gap-3 rounded-xl bg-secondary */}
+                      {/*          ${*/}
+                      {/*            form.getValues("type") === "HEADER" &&*/}
+                      {/*            "scale-95 outline outline-1 outline-offset-4 outline-white"*/}
+                      {/*          }`}>*/}
+                      {/*          <Indent size={32} />*/}
+                      {/*        </div>*/}
+                      {/*        <Label*/}
+                      {/*          htmlFor={"HEADER"}*/}
+                      {/*          className={"cursor-pointer"}>*/}
+                      {/*          HEADER*/}
+                      {/*        </Label>*/}
+                      {/*      </div>*/}
+                      {/*    </FormItem>*/}
+                      {/*  )}*/}
+                      {/*/>*/}
                     </div>
                   </form>
                 </Form>
@@ -242,7 +309,7 @@ export default function EditLinks(): JSX.Element {
         </div>
         <div
           className={
-            "sticky top-[28%] ml-4 mr-4 hidden h-[620px] w-[320px] min-w-[320px] overflow-hidden rounded-[50px] border-[15px] min-[890px]:block lg:m-16"
+            "sticky top-[15%] ml-4 mr-4 hidden h-[620px] w-[320px] min-w-[320px] overflow-hidden rounded-[50px] border-[15px] min-[890px]:block lg:m-16"
           }>
           <div className={"h-full w-full overflow-x-hidden "}>
             <RecordPage data={record} links={links.filter((l) => l.enabled)} />
