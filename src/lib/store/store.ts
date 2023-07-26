@@ -20,7 +20,7 @@ export const useStore = create<State>((set, get) => ({
   links: [],
   modify_link: (id, data) => {
     const { links } = get()
-    links.sort((a, b) => a?.order! - b?.order!)
+    //links.sort((a, b) => a.order - b.order).reverse()
     set({
       links: links.map((link) => {
         return link.id === id ? { ...link, ...data } : link
@@ -36,7 +36,7 @@ export const useStore = create<State>((set, get) => ({
   add_link: (link) => {
     const { links } = get()
     set({
-      links: [...links, link],
+      links: [link, ...links],
     })
   },
   new_order: [{}, {}] as [
@@ -57,21 +57,21 @@ export const useStore = create<State>((set, get) => ({
         const new_index = type === "down" ? ++index : --index
 
         // Change orders
-        link.order = new_order
-        array[new_index].order = old_order
+        link.order = old_order
+        array[new_index].order = new_order
 
         // Return data
         links_obj = [
           { id: link.id, order: link.order },
           {
-            id: array[new_index].id as string,
-            order: array[new_index].order as number,
+            id: array[new_index].id,
+            order: array[new_index].order,
           },
         ]
       }
       return link
     })
-    updated_links.sort((a: Link, b: Link) => a.order - b.order)
+    updated_links.sort((a: Link, b: Link) => b.order - a.order)
     set({
       links: updated_links,
       new_order: links_obj,
