@@ -8,7 +8,10 @@ import { BaseReturnType } from "../../../types/custom-types"
 
 import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
 
-type CreateLinkProps = Pick<Link, "recordId" | "name" | "url" | "order">
+type CreateLinkProps = Pick<
+  Link,
+  "recordId" | "name" | "url" | "order" | "type"
+>
 export const CreateLink = async (
   data: CreateLinkProps
 ): Promise<BaseReturnType & { link?: Link }> => {
