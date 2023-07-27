@@ -121,7 +121,7 @@ export default function Navbar(): JSX.Element {
                 className={
                   "h-11 w-11 rounded-full bg-gray-600 text-xl font-semibold"
                 }>
-                {session.data?.user.username.charAt(0).toUpperCase()}
+                {session.data?.user?.username?.charAt(0).toUpperCase()}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -131,11 +131,11 @@ export default function Navbar(): JSX.Element {
                     "flex w-full flex-row items-center pl-1  pr-3 pt-3"
                   }>
                   <div className="mr-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 text-xl font-semibold">
-                    {session.data?.user.username.charAt(0).toUpperCase()}
+                    {session.data?.user?.username?.charAt(0).toUpperCase()}
                   </div>
                   <div className="">
                     <h2 className={"p-0 text-lg font-bold"}>
-                      @{session.data?.user.username}
+                      @{session.data?.user?.username}
                     </h2>
                     <span className={"text-sm text-gray-400"}></span>
                   </div>
