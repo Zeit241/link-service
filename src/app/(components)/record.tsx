@@ -32,8 +32,6 @@ type RecordPageProps = {
   links: LinkType[]
 }
 
-//TODO: Disable modal while component open in dashboard
-
 export default function RecordPage({
   data,
   links = data.Link,
