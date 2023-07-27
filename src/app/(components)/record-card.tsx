@@ -22,9 +22,8 @@ import { Separator } from "@/app/(components)/ui/separator"
 import { Switch } from "@/app/(components)/ui/switch"
 import { DeleteRecord, UpdateRecord } from "@/app/actions/record"
 
-type unionRecordType = Record & { Link: { id: string }[] } & {
-  Statistic: { id: string }[]
-}
+type unionRecordType = Record & { _count: { Link: number; Statistic: number } }
+
 export default function RecordCard({ record }: { record: unionRecordType }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -66,14 +65,14 @@ export default function RecordCard({ record }: { record: unionRecordType }) {
                 {recordEnabled ? "Enabled" : "Disabled"}
               </Badge>
               <Badge
-                variant={record.Link.length > 0 ? "secondary" : "destructive"}>
-                {record.Link.length + " links"}
+                variant={record._count.Link > 0 ? "secondary" : "destructive"}>
+                {record._count.Link + " links"}
               </Badge>
               <Badge
                 variant={
-                  record.Statistic.length > 0 ? "secondary" : "destructive"
+                  record._count.Statistic > 0 ? "secondary" : "destructive"
                 }>
-                {record.Statistic.length + " clicks"}
+                {record._count.Statistic + " clicks"}
               </Badge>
             </div>
           </>
