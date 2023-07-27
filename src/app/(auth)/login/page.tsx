@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { Command } from "lucide-react"
+import { RefreshCcw } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/app/(components)/ui/button"
@@ -31,7 +31,7 @@ export default function AuthenticationPage() {
             }}
           />
           <div className="relative z-20 flex items-center text-lg font-medium">
-            <Command className="mr-2 h-6 w-6" /> Pretty Links
+            <RefreshCcw className="mr-2 h-6 w-6" /> Link Sync
           </div>
         </div>
         <div className="lg:p-8">
