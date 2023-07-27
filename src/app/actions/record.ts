@@ -149,7 +149,7 @@ export const GetRecordLinks = cache(
         Link: {
           where: linkEnabled ? { enabled: true } : undefined,
           orderBy: {
-            order: "asc",
+            order: "desc",
           },
         },
       },
@@ -172,6 +172,44 @@ export const GetRecordCount = async ({
       status: 200,
       message: "Record fetched successfully.",
       record: record,
+    }
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      return {
+        status: 500,
+        message: "An error occurred during the fetch operation.",
+      }
+    }
+    return {
+      status: 500,
+      message: "An unknown error occurred.",
+    }
+  }
+}
+
+type getLinkAndStatisticCountProps = Pick<Record, "id">
+
+export const getLinkAndStatisticCount = async ({
+  id,
+}: getLinkAndStatisticCountProps) => {
+  try {
+    const data = await prisma.record.findMany({
+      where: {
+        userId: id,
+      },
+      include: {
+        _count: {
+          select: {
+            Link: true,
+            Statistic: true,
+          },
+        },
+      },
+    })
+    return {
+      status: 200,
+      message: "Record fetched successfully.",
+      data: data,
     }
   } catch (e) {
     if (e instanceof PrismaClientKnownRequestError) {
