@@ -19,36 +19,36 @@ model Session {
 }
 
 model User {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  username String  @unique
-  name     String? @db.String
-  password String  @db.String
-  // email    String? @unique
-
-  status   Status  @default(ACTIVE)
-  verified Boolean @default(false)
-  role     Role    @default(USER)
-
-  createdAt DateTime @default(now()) @db.Date
-  updatedAt DateTime @updatedAt
-
-  records  Record[]
-  accounts Account[]
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  username      String?   @unique
+  name          String?   @db.String
+  password      String?   @db.String
+  email         String?   @unique
+  emailVerified Boolean?
+  image         String?   @db.String
+  status        Status    @default(ACTIVE)
+  verified      Boolean   @default(false)
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now()) @db.Date
+  updatedAt     DateTime  @updatedAt
+  records       Record[]
+  accounts      Account[]
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.String
-  session_state     String?
+  id                       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId                   String  @db.ObjectId
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.String
+  access_token             String? @db.String
+  expires_at               Int?
+  refresh_token_expires_in Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.String
+  session_state            String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
