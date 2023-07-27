@@ -1,5 +1,7 @@
 "use server"
 
+import bcrypt from "bcrypt"
+
 import { prisma } from "@/lib/database"
 
 import { BaseReturnType } from "../../../types/custom-types"
@@ -14,6 +16,7 @@ export const SingUp = async (
     await prisma.user.create({
       data: {
         ...data,
+        password: bcrypt.hashSync(data.password!, 10),
         role: "USER",
       },
     })
@@ -41,7 +44,8 @@ export const SignIn = async (
   data: UserSignInProps
 ): Promise<UserSignInResult | null> => {
   //try {
-  const user = await prisma?.user.findUnique({
+  const user = await prisma.user.findUnique({
+    //@ts-ignore
     where: data,
     select: {
       id: true,
