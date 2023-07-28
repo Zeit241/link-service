@@ -1,14 +1,9 @@
-import { Metadata } from "next"
 import Link from "next/link"
 import { RefreshCcw } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/app/(components)/ui/button"
 import { UserAuthForm } from "@/app/(components)/user-auth-form"
-
-export const metadata: Metadata = {
-  title: "Authentication",
-}
 
 export default function AuthenticationPage() {
   return (

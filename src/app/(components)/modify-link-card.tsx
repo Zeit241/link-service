@@ -28,11 +28,10 @@ export default function ModifyLinkCard({
   const [isNameEditing, setIsNameEditing] = useState<boolean>(false)
   const [isUrlEditing, setIsUrlEditing] = useState<boolean>(false)
   const [nameValue, setNameValue] = useState<string>(link.name)
-  const [urlValue, setUrlValue] = useState<string>(link.url)
+  const [urlValue, setUrlValue] = useState<string>(link.url!)
   const name = useRef<HTMLInputElement | null>(null)
   const url = useRef<HTMLInputElement | null>(null)
-  //TODO: add validation for edited links
-  //TODO: add typing of links like url, email, address, text, etc
+
   //Set cursor position at the end of the input value
   useEffect(() => {
     if (isNameEditing) {
