@@ -7,6 +7,10 @@ import { Toaster } from "@/app/(components)/ui/toaster"
 
 export const metadata: Metadata = {
   title: "LinkSync | Yours links list",
+  description:
+    "LinkSync is the ultimate link aggregator platform that allows you to effortlessly collect, organize, and share web links with ease. Create custom link collections and collaborate with others efficiently. Explore a curated world of information with LinkSync.",
+  keywords:
+    "link aggregator, link collection, web links, content curation, link sharing, URL organizer, online bookmarks, curated content, collaborative link sharing",
   manifest: "/site.webmanifest",
   icons: {
     icon: [

@@ -13,6 +13,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return {
     title: `@${params.slug} | LinkSync`,
+    description: `Explore and access ${params.slug}'s collection of web links with LinkSync. Discover valuable resources handpicked for you!`,
+    keywords: `${params.slug}'s links, ${params.slug}, link collection, web links, curated content, bookmarks, favorite links, personal collection`,
   }
 }
 
@@ -31,7 +33,7 @@ export default async function RecordsPage({
   ) : (
     <div className={"h-full overflow-x-hidden"}>
       <Suspense fallback={<Loading />}>
-        <RecordPage data={data} links={data.Link} />
+        <RecordPage data={data} links={data.Link} isIframe={false} />
       </Suspense>
     </div>
   )
