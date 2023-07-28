@@ -47,7 +47,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       const url = new URL(window.location.href)
       setIsUsernameInUrl(url.searchParams.get("username"))
     }
-  }, [props.type])
+  }, [props.type, type])
 
   const { toast } = useToast()
   const router = useRouter()
@@ -224,7 +224,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         variant="outline"
         type="button"
         disabled={isLoading}
-        onClick={() => signIn("github")}>
+        onClick={() => {
+          setIsLoading(true)
+          return signIn("github")
+        }}>
         {isLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
@@ -236,7 +239,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         variant="outline"
         type="button"
         disabled={isLoading}
-        onClick={() => signIn("google")}>
+        onClick={() => {
+          setIsLoading(true)
+          return signIn("google")
+        }}>
         {isLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
