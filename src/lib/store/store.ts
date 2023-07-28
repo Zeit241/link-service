@@ -5,8 +5,13 @@ type ModifyLinkProps = Partial<
   Pick<Link, "order" | "url" | "name" | "enabled" | "animated">
 >
 
+type ModifyRecordProps = Partial<
+  Omit<Record, "id" | "createdAt" | "updatedAt" | "url">
+>
+
 interface State {
   record: Record & { Link: Link[] }
+  modify_record: (data: ModifyRecordProps) => void
   links: Link[]
   new_order: [{ id: string; order: number }, { id: string; order: number }]
   modify_link: (id: string, data: ModifyLinkProps) => void
@@ -17,10 +22,18 @@ interface State {
 
 export const useStore = create<State>((set, get) => ({
   record: {} as Record & { Link: Link[] },
+  modify_record: (data) => {
+    const { record } = get()
+    set({
+      record: {
+        ...record,
+        ...data,
+      },
+    })
+  },
   links: [],
   modify_link: (id, data) => {
     const { links } = get()
-    //links.sort((a, b) => a.order - b.order).reverse()
     set({
       links: links.map((link) => {
         return link.id === id ? { ...link, ...data } : link
