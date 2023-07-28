@@ -8,6 +8,7 @@ import { Loader2, Plus } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { createRecordSchema } from "@/lib/schema/create-project"
 import { isWordNotAllowed } from "@/lib/utils"
 import { Button } from "@/app/(components)/ui/button"
 import { Card } from "@/app/(components)/ui/card"
@@ -30,19 +31,6 @@ import {
 import { Input } from "@/app/(components)/ui/input"
 import { CreateRecord, VerifyRecordName } from "@/app/actions/record"
 
-const createRecordSchema = z.object({
-  name: z
-    .string()
-    .min(5, {
-      message: "Name must be at least 5 characters",
-    })
-    .max(20, {
-      message: "Name must be less than 20 characters",
-    })
-    .regex(/^[a-zA-Z0-9\-._#[\]@!$=]*$/g, {
-      message: "Invalid characters.",
-    }),
-})
 export default function CreateCardBtn({ id }: { id: string }) {
   const router = useRouter()
   const [isNameChecked, setIsNameChecked] = useState<boolean>(false)

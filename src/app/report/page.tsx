@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { useToast } from "@/lib/hooks/use-toast"
+import { reportSchema } from "@/lib/schema/report"
 import SessionProviderWrapper from "@/app/(components)/session-provider"
 import { Button } from "@/app/(components)/ui/button"
 import {
@@ -41,7 +42,6 @@ export default function Report({
   useEffect(() => {
     setLoading(true)
     if (!id || !searchParams || typeof id !== "string") return setValid(false)
-
     GetRecordCount({ id: id as string }).then((data) => {
       if (data.status !== 200 || !data?.record) {
         setValid(false)
@@ -54,20 +54,15 @@ export default function Report({
   if (!valid) notFound()
   const { toast } = useToast()
   const router = useRouter()
-  const formSchema = z.object({
-    message: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-  })
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof reportSchema>>({
+    resolver: zodResolver(reportSchema),
     defaultValues: {
       message: "Select a reason to report",
     },
   })
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof reportSchema>) {
     await SendReport({ recordId: id as string, text: data.message })
       .then(() =>
         toast({
