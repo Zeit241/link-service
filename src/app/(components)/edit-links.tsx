@@ -59,7 +59,6 @@ export default function EditLinks(): JSX.Element {
     url: z.string().refine(
       (value) => {
         const type = getLinkType({ url: value.trim().toLowerCase() })
-        console.log(type)
         if (!!type) {
           form.setValue("type", type)
         }
@@ -99,6 +98,7 @@ export default function EditLinks(): JSX.Element {
     setIsAddCardOpen(false)
   }
 
+  //Add warn before close/refresh page
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (isLoading) {
@@ -148,7 +148,7 @@ export default function EditLinks(): JSX.Element {
 
       <div
         className={
-          "relative flex w-full flex-row items-start justify-center p-8 pb-0 min-[100px]:p-2"
+          "relative flex w-full flex-row items-start justify-center p-8 pb-0 focus-visible:outline-none min-[100px]:p-2"
         }>
         <div
           className={
@@ -312,7 +312,11 @@ export default function EditLinks(): JSX.Element {
             "sticky top-[15%] ml-4 mr-4 hidden h-[620px] w-[320px] min-w-[320px] overflow-hidden rounded-[50px] border-[15px] min-[890px]:block lg:m-16"
           }>
           <div className={"h-full w-full overflow-x-hidden "}>
-            <RecordPage data={record} links={links.filter((l) => l.enabled)} />
+            <RecordPage
+              data={record}
+              links={links.filter((l) => l.enabled)}
+              isIframe={true}
+            />
           </div>
         </div>
         <div ref={mobilePreview} className={" min-[890px]:hidden"}>
@@ -327,6 +331,7 @@ export default function EditLinks(): JSX.Element {
                   "fixed right-[0%] top-[5%] h-[95%] w-full overflow-y-scroll rounded-t-[30px] border-t-[15px] bg-background"
                 }>
                 <RecordPage
+                  isIframe={true}
                   data={record}
                   links={links.filter((l) => l.enabled)}
                 />

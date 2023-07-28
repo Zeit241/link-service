@@ -9,7 +9,7 @@ export default function LinkItem({ link }: LinkItemProps): JSX.Element {
   const router = useRouter()
 
   const redirect = (): void => {
-    router.replace(link.url)
+    router.replace(link.url!)
   }
 
   const sendStatistic = async (): Promise<void> => {
