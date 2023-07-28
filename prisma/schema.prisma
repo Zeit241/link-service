@@ -63,6 +63,7 @@ model Record {
   adult          Boolean     @default(false)
   description    String?
   profilePicture String      @default("")
+  pictureKey     String?     @db.String
   preferences    Prefences
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String      @db.ObjectId
@@ -75,18 +76,21 @@ model Record {
 
 model Link {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  record      Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
-  recordId    String       @db.ObjectId
   order       Int          @default(0)
   type        LinkType     @default(URL)
   error       Boolean      @default(false)
-  url         String
+  url         String?
+  document    Document?
+  video       Video?
+  contact     Contact?
   name        String
   enabled     Boolean      @default(true)
   customImage CustomImage?
   animated    Boolean?     @default(false)
   createdAt   DateTime     @default(now()) @db.Date
   updatedAt   DateTime     @updatedAt
+  record      Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  recordId    String       @db.ObjectId
   Statistic   Statistic[]
 }
 
@@ -114,15 +118,42 @@ model Warns {
   recordId  String   @db.ObjectId
 }
 
-enum Role {
-  USER
-  ADMIN
+type Document {
+  description String @default("")
+  url         String
 }
 
-enum Status {
-  ACTIVE
-  FROZEN
-  BANNED
+type Video {
+  showOnPage Boolean
+  url        String
+}
+
+type Contact {
+  firstname       String?
+  lastname        String?
+  organization    String?
+  position        String?
+  email_1         ContactEmail?
+  email_2         ContactEmail?
+  phone_1         ContactPhone?
+  phone_2         ContactPhone?
+  adress          String?
+  adress_optional String?
+  city            String?
+  country         String?
+  zip             String?
+  state           String?
+  description     String?
+}
+
+type ContactEmail {
+  email String
+  type  EmailType @default(OTHER)
+}
+
+type ContactPhone {
+  phone String
+  type  PhoneType @default(OTHER)
 }
 
 type Prefences {
@@ -138,6 +169,19 @@ type CustomImage {
 type ShareLink {
   shared   Boolean @default(false)
   sharedTo ShareTo
+}
+
+enum EmailType {
+  PERSONAL
+  WORK
+  OTHER
+}
+
+enum PhoneType {
+  MOBILE
+  HOME
+  WORK
+  OTHER
 }
 
 enum ShareTo {
@@ -157,7 +201,18 @@ enum LinkType {
 }
 
 enum LinkWarnType {
-  // CODE
-  // AGE
+  CODE
+  AGE
   ADULT
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  ACTIVE
+  FROZEN
+  BANNED
 }
