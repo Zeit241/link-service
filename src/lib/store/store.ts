@@ -1,5 +1,6 @@
 import { Link, Record } from "@prisma/client"
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
 type ModifyLinkProps = Partial<
   Pick<Link, "order" | "url" | "name" | "enabled" | "animated">
@@ -9,7 +10,7 @@ type ModifyRecordProps = Partial<
   Omit<Record, "id" | "createdAt" | "updatedAt" | "url">
 >
 
-interface State {
+interface dataStoreType {
   record: Record & { Link: Link[] }
   modify_record: (data: ModifyRecordProps) => void
   links: Link[]
@@ -20,7 +21,7 @@ interface State {
   change_order: (id: string, type: "up" | "down") => void
 }
 
-export const useStore = create<State>((set, get) => ({
+export const useDataStore = create<dataStoreType>((set, get) => ({
   record: {} as Record & { Link: Link[] },
   modify_record: (data) => {
     const { record } = get()
@@ -91,3 +92,19 @@ export const useStore = create<State>((set, get) => ({
     })
   },
 }))
+
+type locationStoreType = {
+  location: string
+  setLocation: (location: string) => void
+}
+export const useLocationStore = create<locationStoreType>()(
+  persist(
+    (set, get) => ({
+      location: "links",
+      setLocation: (location: string) => set({ location }),
+    }),
+    {
+      name: "location",
+    }
+  )
+)
