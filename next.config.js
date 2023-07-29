@@ -6,7 +6,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ["@prisma/client"],
   },
   images: {
-    domains: ["api.qrserver.com"],
+    domains: ["api.qrserver.com", "uploadthing.com"],
   },
 }
 
