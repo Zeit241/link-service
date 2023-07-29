@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Link as LinkType, Record as RecordType } from "@prisma/client"
@@ -239,7 +240,19 @@ export default function RecordPage({
             className={
               "flex h-20 w-20 select-none items-center justify-center rounded-full bg-muted-foreground text-center text-4xl text-white"
             }>
-            {data?.name?.charAt(0)?.toUpperCase()}
+            {!!data.profilePicture ? (
+              <Image
+                className={"rounded-full"}
+                src={data.profilePicture}
+                alt={data.name}
+                width={80}
+                height={80}
+              />
+            ) : data.name.charAt(0) === "@" ? (
+              data?.name?.charAt(1)?.toUpperCase()
+            ) : (
+              data?.name?.charAt(0)?.toUpperCase()
+            )}
           </div>
           <span className={"mb-1 mt-6 font-bold uppercase"}>{data?.name}</span>
           <p>{data?.description}</p>
