@@ -18,7 +18,7 @@ import {
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { useStore } from "@/lib/store/store"
+import { useDataStore } from "@/lib/store/store"
 import { getLinkType, urlNormalize } from "@/lib/utils"
 import ModifyLinkCard from "@/app/(components)/modify-link-card"
 import RecordPage from "@/app/(components)/record"
@@ -36,7 +36,7 @@ import { CreateLink } from "@/app/actions/link"
 import { getUrlTitle } from "@/app/actions/utils"
 
 export default function EditLinks(): JSX.Element {
-  const { links, record, add_link } = useStore()
+  const { links, record, add_link } = useDataStore()
   const pathname = usePathname()
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)

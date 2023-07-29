@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { Link, Record } from "@prisma/client"
 
-import { useStore } from "@/lib/store/store"
+import { useDataStore } from "@/lib/store/store"
 
 type StoreInitializerProps = { record: Record & { Link: Link[] } } & {
   links: Link[]
@@ -12,7 +12,7 @@ type StoreInitializerProps = { record: Record & { Link: Link[] } } & {
 function StoreInitializer({ record, links }: StoreInitializerProps) {
   const initialized = useRef(false)
   if (!initialized.current) {
-    useStore.setState({ record: record, links: links })
+    useDataStore.setState({ record: record, links: links })
 
     initialized.current = true
   }

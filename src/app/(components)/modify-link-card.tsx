@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Link } from "@prisma/client"
 import { ChevronDown, ChevronUp, Pencil, Trash } from "lucide-react"
 
-import { useStore } from "@/lib/store/store"
+import { useDataStore } from "@/lib/store/store"
 import { Button } from "@/app/(components)/ui/button"
 import { Card } from "@/app/(components)/ui/card"
 import { Input } from "@/app/(components)/ui/input"
@@ -22,7 +22,7 @@ export default function ModifyLinkCard({
   index,
   max,
 }: ModifyLinkCardProps) {
-  const { change_order, new_order, remove_link, modify_link } = useStore()
+  const { change_order, new_order, remove_link, modify_link } = useDataStore()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isEnabled, setIsEnabled] = useState<boolean>(link.enabled)
   const [isNameEditing, setIsNameEditing] = useState<boolean>(false)
