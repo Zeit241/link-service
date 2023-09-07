@@ -245,8 +245,8 @@ export default function RecordPage({
                 className={"rounded-full"}
                 src={data.profilePicture}
                 alt={data.name}
-                width={80}
-                height={80}
+                width={150}
+                height={150}
               />
             ) : data.name.charAt(0) === "@" ? (
               data?.name?.charAt(1)?.toUpperCase()

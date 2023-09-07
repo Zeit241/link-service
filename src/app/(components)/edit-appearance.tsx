@@ -15,7 +15,7 @@ import { z } from "zod"
 
 import { ModifyProjectInfo } from "@/lib/schema/project"
 import { useDataStore } from "@/lib/store/store"
-import { useUploadThing } from "@/lib/uploadthing"
+import PictureLoader from "@/app/(components)/picture-loader"
 import {
   Avatar,
   AvatarFallback,
@@ -36,10 +36,9 @@ import { Label } from "@/app/(components)/ui/label"
 import { Separator } from "@/app/(components)/ui/separator"
 import { Switch } from "@/app/(components)/ui/switch"
 import { Textarea } from "@/app/(components)/ui/textarea"
-import { deleteFile } from "@/app/actions/files"
 import { UpdateRecord } from "@/app/actions/record"
 
-function Icon({
+export function Icon({
   icon,
   username,
 }: {
@@ -48,7 +47,8 @@ function Icon({
 }): JSX.Element {
   if (!!icon) {
     return (
-      <Avatar className={"h-24 w-24"}>
+      <Avatar
+        className={"h-24 w-24 min-w-[6rem] max-w-[6rem] overflow-x-hidden"}>
         <AvatarImage src={icon} alt={username} />
         <AvatarFallback className={"text-4xl font-bold"}>
           {username?.charAt(0).toUpperCase()}
@@ -59,7 +59,7 @@ function Icon({
   return (
     <div
       className={
-        "flex h-24 w-24 select-none items-center justify-center rounded-full bg-secondary sm:w-[7.5rem]"
+        "flex h-24 w-24 min-w-[6rem] select-none items-center justify-center rounded-full bg-secondary"
       }>
       <span className={"text-4xl font-bold"}>
         {username?.charAt(0).toUpperCase()}
@@ -70,7 +70,7 @@ function Icon({
 
 export default function EditAppearance(): JSX.Element {
   const { record, modify_record } = useDataStore()
-  const [isImageRemoving, setIsImageRemoving] = useState<boolean>(false)
+
   const [isAgeRestrictionLoading, setIsAgeRestrictionLoading] =
     useState<boolean>(false)
 
@@ -84,30 +84,6 @@ export default function EditAppearance(): JSX.Element {
     },
   })
 
-  const updateData = async ({
-    fileUrl,
-    fileKey,
-    remove,
-  }: {
-    fileUrl: string
-    fileKey: string
-    remove: boolean
-  }) => {
-    if (record.pictureKey || remove) {
-      await deleteFile(record.pictureKey!)
-    }
-    await UpdateRecord({
-      id: record?.id,
-      profilePicture: fileUrl,
-      pictureKey: fileKey,
-    }).then(() =>
-      modify_record({
-        profilePicture: fileUrl,
-        pictureKey: fileKey,
-      })
-    )
-  }
-
   const onInfoSubmit = async (value: z.infer<typeof ModifyProjectInfo>) => {
     const { name, description } = value
     await UpdateRecord({
@@ -116,22 +92,6 @@ export default function EditAppearance(): JSX.Element {
       description,
     }).then(() => modify_record({ name, description }))
   }
-
-  const { isUploading, startUpload } = useUploadThing("imageUploader", {
-    async onClientUploadComplete(res) {
-      if (res) {
-        const { fileUrl, fileKey } = res[0]
-        await updateData({
-          fileUrl,
-          fileKey,
-          remove: false,
-        })
-      }
-    },
-    onUploadError(error: Error) {
-      alert(`ERROR! ${error.message}`)
-    },
-  })
 
   return (
     <>
@@ -148,51 +108,7 @@ export default function EditAppearance(): JSX.Element {
           </div>
 
           <Card className={"w-full p-8 sm:w-3/5"}>
-            <div className={"flex flex-col items-center gap-5 sm:flex-row"}>
-              <Icon icon={record?.profilePicture} username={record?.url} />
-              <div className={"flex w-full flex-col gap-2"}>
-                <label
-                  htmlFor={"imageUploader"}
-                  className={`flex h-10 w-full cursor-pointer items-center justify-center rounded-md bg-primary p-3 text-center text-black hover:bg-primary/90 ${
-                    (isUploading || isImageRemoving) &&
-                    "cursor-wait opacity-50 hover:bg-primary"
-                  }`}>
-                  {isUploading ? (
-                    <Loader2 className={"animate-spin"} />
-                  ) : (
-                    "Upload"
-                  )}
-                  <input
-                    disabled={isUploading || isImageRemoving}
-                    id={"imageUploader"}
-                    type={"file"}
-                    className={"hidden"}
-                    accept={"image/*"}
-                    onChange={(e) => {
-                      if (!e.target.files) return
-                      void startUpload(Array.from(e.target.files))
-                    }}
-                  />
-                </label>
-                <Button
-                  disabled={isUploading || isImageRemoving}
-                  variant={"secondary"}
-                  onClick={async () => {
-                    setIsImageRemoving(true)
-                    await updateData({
-                      fileUrl: "",
-                      fileKey: "",
-                      remove: true,
-                    }).then(() => setIsImageRemoving(false))
-                  }}>
-                  {isImageRemoving ? (
-                    <Loader2 className={"animate-spin"} />
-                  ) : (
-                    "Remove"
-                  )}
-                </Button>
-              </div>
-            </div>
+            <PictureLoader />
             <Separator className={"my-8"} />
             <Form {...form}>
               <form
