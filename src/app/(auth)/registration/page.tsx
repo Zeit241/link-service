@@ -8,7 +8,7 @@ import { UserAuthForm } from "@/app/(components)/user-auth-form"
 export default function AuthenticationPage() {
   return (
     <div className={"h-screen"}>
-      <div className="container relative grid h-[800px] max-w-[562px] flex-col items-center justify-center sm:grid md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <div className="container relative grid h-full max-w-[562px] flex-col items-center justify-center sm:grid md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           href={"/login"}
           className={cn(
