@@ -21,7 +21,7 @@ import { Skeleton } from "@/app/(components)/ui/skeleton"
 
 const nav_menu = [
   { path: "dashboard", name: "Dashboard" },
-  { path: "settings", name: "Settings" },
+  //{ path: "settings", name: "Settings" },
 ]
 
 function Logo(): JSX.Element {
@@ -50,8 +50,11 @@ function UnauthenticatedNavbar(): JSX.Element {
       className={
         "flex h-14 w-full max-w-[100vw] flex-row items-center justify-between border-b border-border bg-background pl-4 pr-8"
       }>
-      <div className="logo">
+      <div className="logo flex items-center justify-center">
         <Logo />
+        <Link href={"/"}>
+          <span className={"text-xl font-medium"}>LinkSync</span>
+        </Link>
       </div>
       <div className={"flex items-end justify-end gap-2.5"}>
         <Button className={"flex gap-2.5"} asChild>
@@ -90,7 +93,7 @@ export default function Navbar(): JSX.Element {
               <Link
                 key={e.path}
                 href={`/${e.path}`}
-                className={`flex flex-row items-center text-sm font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}>
+                className={`flex flex-row items-center text-lg font-medium tracking-wider transition-colors sm:text-xs ${is_current_page}`}>
                 {e.name}
               </Link>
             )
