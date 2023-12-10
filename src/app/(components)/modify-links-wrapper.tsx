@@ -4,6 +4,7 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 
 import { useLocationStore } from "@/lib/store/store"
+import Loading from "@/app/(authenticated)/dashboard/modify/[slug]/loading"
 import CheckAnalytics from "@/app/(components)/check-analytics"
 import EditAppearance from "@/app/(components)/edit-appearance"
 import EditLinks from "@/app/(components)/edit-links"
@@ -14,13 +15,17 @@ import {
   TabsTrigger,
 } from "@/app/(components)/ui/tabs"
 
+type location = "links" | "appearance" | "analytics"
 export default function ModifyLinksWrapper() {
-  const [currentTab, setCurrentTab] = useState("links")
+  const [currentTab, setCurrentTab] = useState<location>()
   const { location, setLocation } = useLocationStore()
   useEffect(() => {
-    setCurrentTab(location)
+    setCurrentTab(location as location)
   }, [location])
 
+  if (!currentTab) {
+    return <Loading />
+  }
   return (
     <div
       className={
