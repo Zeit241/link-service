@@ -82,7 +82,7 @@ export default function Report({
       {loading ? (
         <div
           className={"flex h-full w-full flex-col items-center justify-center"}>
-          <Loader2 className={"animate-spin"} />
+          <Loader2 className={"h-16 w-16 animate-spin"} />
         </div>
       ) : (
         <div
