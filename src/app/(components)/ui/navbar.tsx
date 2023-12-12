@@ -149,8 +149,12 @@ export default function Navbar(): JSX.Element {
               </DropdownMenuLabel>
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <Link
+                    href={"/profile"}
+                    className={"flex flex-row items-center"}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
